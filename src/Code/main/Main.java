@@ -7,9 +7,9 @@ import Code.dbManager.DBManager;
 public class Main {
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
-		DBManager dbm = new DBManager();
+		//DBManager dbm = new DBManager();
 
-		dbm.Init();
+		DBManager.Init();
 		String str = "";
 
 		System.out.println("Quel est votre choix?");
@@ -18,10 +18,10 @@ public class Main {
 			System.out.println("Quel est votre choix?");
 			str = sc.nextLine();
 			System.out.println(str);
-			dbm.ProcessCommand(str);
+			DBManager.ProcessCommand(str);
 
 		} while (!str.equals("exit"));
-		dbm.Finish();
+		DBManager.Finish();
 
 		sc.close();
 	}

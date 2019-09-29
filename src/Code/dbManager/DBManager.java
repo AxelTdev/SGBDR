@@ -1,20 +1,29 @@
 package Code.dbManager;
 
+import Code.dbdef.DBDef;
+
 public class DBManager {
+	
+	private static DBManager instance = null;
 
-	public DBManager() {
-
-	}
-
-	public void Init() {
+	private DBManager() {
 
 	}
+	
 
-	public void Finish() {
-
+	public static DBManager Init() {
+		if(instance==null) {
+			instance=new DBManager();
+		}
+		DBDef.Init();
+		return instance ;
 	}
 
-	public void ProcessCommand(String str) {
+	public static void Finish() {
+		DBDef.Finish();
+	}
+
+	public static void ProcessCommand(String str) {
 
 	}
 
