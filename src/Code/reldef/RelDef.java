@@ -7,5 +7,10 @@ public class RelDef {
 	private int nbColonne;
 
 	private String[] typeColonne = { "int", "float", "stringT" };
+	
+	
+	public static void create (String s) {
+		
+	}
 
 }
