@@ -14,7 +14,7 @@ public class DiskManager {
 	private static int compteur_page = 1;
 	private static DiskManager instance = null;
 
-	public DiskManager() {
+	private DiskManager() {
 
 	}
 
