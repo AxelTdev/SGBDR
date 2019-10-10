@@ -2,11 +2,18 @@ package Code.pages;
 
 public class PageId {
 
-	public int fileIdx ,pageIdx;
+	private int fileIdx ,pageIdx;
 
 	public PageId(int fileIdx, int pageIdx) {
-		fileIdx = fileIdx;
-		pageIdx = pageIdx;
+		this.fileIdx = fileIdx;
+		this.pageIdx = pageIdx;
+	}
+	public int getFileIdx() {
+		return this.fileIdx;
+		
+	}
+	public int getPageIdx() {
+		return this.pageIdx;
 	}
 	
 	
