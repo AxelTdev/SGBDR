@@ -8,6 +8,7 @@ import java.nio.channels.FileChannel;
 import Code.pages.PageId;
 
 public class DiskManager {
+	private int compteur_page = 1;
 	private static DiskManager  instance = null;
 	
 	private DiskManager() {
@@ -32,7 +33,8 @@ public class DiskManager {
 	
 	public static PageId AddPage (int fileIdx) {
 		
-		PageId p = new PageId(fileIdx, /* la pageId qu'on récupère du fichier +1 */0);
+		PageId p = new PageId(fileIdx,compteur_page);
+		compteur_page++;
 		return p;
 	}
 	
