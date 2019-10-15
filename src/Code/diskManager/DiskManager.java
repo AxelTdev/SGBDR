@@ -7,6 +7,7 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import Code.frame.Frame;
 import Code.pages.PageId;
 import Code.util.Constants;
 
@@ -81,6 +82,26 @@ public class DiskManager {
 			e.printStackTrace();
 		}
 
+	}
+
+	public static void main(String[] args) {
+		DiskManager u = DiskManager.getInstance();
+		Frame[] f = new Frame[5];
+		u.CreateFile(1);
+		
+		for (int i = 0; i < 5; i++) {
+			try {
+				
+				f[i] = new Frame(u.AddPage(1));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		byte[] buff = new byte[Constants.pageSize];
+		u.ReadPage(f[2].getIdPage(), buff);
+		f[2].setBuff(buff);
+		System.out.println(f[4].getBuff()[0]);
 	}
 
 }

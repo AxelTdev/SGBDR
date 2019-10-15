@@ -6,8 +6,8 @@ import Code.reldef.RelDef;
 
 public class DBDef {
 	
-	private ArrayList <RelDef> reldef=new ArrayList<>();
-	private int nbRelation=0;
+	private static ArrayList <RelDef> reldef=new ArrayList<>();
+	private static int nbRelation=0;
 	
 	private static DBDef instance = null;
 
@@ -26,7 +26,7 @@ public class DBDef {
 		
 	}
 
-	public void AddRelation(RelDef reldel) {
+	public static void AddRelation(RelDef reldel) {
 
 		reldef.add(reldel);
 		nbRelation++;

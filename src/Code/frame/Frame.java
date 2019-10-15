@@ -28,7 +28,7 @@ public class Frame {
 	
 	public void Clock(Frame [] f) {
 		boolean remplacement = false;
-		for(int i = 0; i< f.length && remplacement; i++) {
+		for(int i = 0; !remplacement; i++) {
 			if(pin_count == 0 && ref_bit == 1) {
 				ref_bit = 0;
 			}
