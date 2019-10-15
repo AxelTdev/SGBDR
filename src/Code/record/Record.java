@@ -1,9 +1,7 @@
 package Code.record;
 
 import java.nio.ByteBuffer;
-
 import Code.reldef.RelDef;
-import Code.util.Constants;
 
 public class Record {
 	private RelDef refdef;
@@ -38,7 +36,7 @@ public class Record {
 
 					// remplir le ByteBuffer
 					for (int y = 0; y < longeurInt; y++) {
-						System.out.println(tableauChar[y]);
+
 						bb.putChar(tableauChar[y]);
 
 					}
@@ -97,26 +95,4 @@ public class Record {
 		return this.values;
 	}
 
-	public static void main(String args[]) {
-		byte[] buff = new byte[Constants.pageSize];
-		RelDef reldef = new RelDef();
-		String[] typeColonne = { "int", "float", "string3" };
-		reldef.setTypeColonne(typeColonne);
-		Record r = new Record(reldef);
-		String[] temp = { "3", "3.3", "axe" };
-		r.setValues(temp);
-
-		r.writeToBuffer(buff, 0);// comment utiliser le parametre position
-		for (int i = 0; i < buff.length; i++) {
-			System.out.println(buff[i]);
-		}
-
-		String[] temp1 = { "2", "2", "3" };
-		r.setValues(temp1);
-		r.readFromBuffer(buff, 0);
-
-		for (int i = 0; i < r.getValues().length; i++) {
-			System.out.println(r.values[i]);
-		}
-	}
 }
