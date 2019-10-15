@@ -31,5 +31,9 @@ public class DBDef {
 		reldef.add(reldel);
 		nbRelation++;
 	}
+	
+	public int getNbRelation() {
+		return nbRelation;
+	}
 
 }

@@ -6,7 +6,20 @@ public class RelDef {
 
 	private int nbColonne;
 
-	private String[] typeColonne = { "int", "float", "stringT" };
+	private String[] typeColonne;
+	
+	private int fileIdx;
+	
+	private int recordSize;
+	
+	private int slotCount;
+	
+	
+	public RelDef(int fileIdx, int recordSize, int slotCount) {
+		this.fileIdx = fileIdx;
+		this.recordSize = recordSize;
+		this.slotCount = slotCount;
+	}
 
 	public static void create(String s) {
 
