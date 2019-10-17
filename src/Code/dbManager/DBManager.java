@@ -3,6 +3,7 @@ package Code.dbManager;
 import Code.BufferManager.BufferManager;
 import Code.dbdef.DBDef;
 import Code.reldef.RelDef;
+import Code.reldef.RelDef.Type;
 import Code.util.Constants;
 
 public class DBManager {
@@ -43,15 +44,15 @@ public class DBManager {
 
 	}
 
-	public static void CreateRelation(String nomRelation, int nbColonne, String[] typeColonne) {
+	public static void CreateRelation(String nomRelation, int nbColonne, Type[] typeColonne) {
 		int recordSize = 0;
 		for (int i = 0; i < nbColonne; i++) {
-			if (typeColonne[i].equals("int") || typeColonne[i].equals("float")) {
+			if (typeColonne[i] == Type.INT || typeColonne[i] == Type.FLOAT) {
 				recordSize += 4;
 
-			} else if (typeColonne[i].contains("string")) {
-				char longeur = typeColonne[i].charAt(typeColonne[i].length() - 1);
-				int longeurInt = Character.getNumericValue(longeur);
+			} else if (typeColonne[i] == Type.STRING) {
+				
+				int longeurInt = typeColonne[i].getSize();
 				recordSize += 2 * longeurInt;
 			} else {
 				System.out.println("type de colonne non reconnu");

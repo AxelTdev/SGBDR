@@ -2,6 +2,8 @@ package Code.record;
 
 import java.nio.ByteBuffer;
 import Code.reldef.RelDef;
+import Code.reldef.RelDef.Type;
+import Code.util.Constants;
 
 public class Record {
 	private RelDef refdef;
@@ -14,72 +16,68 @@ public class Record {
 
 	public void writeToBuffer(byte[] buff, int position) {
 		ByteBuffer bb = ByteBuffer.wrap(buff);
+		bb.position(position);
 
 		for (int i = 0; i < refdef.getTypeColonne().length; i++) {
 
 			switch (refdef.getTypeColonne()[i]) {
-			case "int":
+			case INT:
 				int a = Integer.parseInt(values[i]);
 				bb.putInt(a);
+
 				break;
-			case "float":
+			case FLOAT:
 				float b = Float.parseFloat(values[i]);
 				bb.putFloat(b);
 				break;
-			default:
-				if (refdef.getTypeColonne()[i].contains("string")) {
-					// savoir la longueur du string
-					char longeur = refdef.getTypeColonne()[i].charAt(refdef.getTypeColonne()[i].length() - 1);
-					int longeurInt = Character.getNumericValue(longeur);
+			case STRING:
+				int longeur = refdef.getTypeColonne()[i].getSize();
+				char[] tableauChar = values[i].toCharArray();
+				for (int y = 0; y < longeur; y++) {
 
-					char[] tableauChar = values[i].toCharArray();
+					bb.putChar(tableauChar[y]);
 
-					// remplir le ByteBuffer
-					for (int y = 0; y < longeurInt; y++) {
-
-						bb.putChar(tableauChar[y]);
-
-					}
-				} else {
-					System.out.println("type de colonne non reconnu");
 				}
+				break;
 
+			default:
+
+				System.out.println("type de colonne non reconnu");
 			}
-		}
 
+		}
 	}
 
 	public void readFromBuffer(byte[] buff, int position) {
 		ByteBuffer bb = ByteBuffer.wrap(buff);
+		bb.position();
 		String str = null;
 		for (int i = 0; i < refdef.getTypeColonne().length; i++) {
 			switch (refdef.getTypeColonne()[i]) {
-			case "int":
+			case INT:
 
 				str = Integer.toString(bb.getInt());
 				values[i] = str;
 				break;
-			case "float":
+			case FLOAT:
 				str = Float.toString(bb.getFloat());
 				values[i] = str;
 				break;
-			default:
-				if (refdef.getTypeColonne()[i].contains("string")) {
-					// savoir la longueur du string
-					char longeur = refdef.getTypeColonne()[i].charAt(refdef.getTypeColonne()[i].length() - 1);
-					int longeurInt = Character.getNumericValue(longeur);
+			case STRING:
 
-					char[] tabString = new char[longeurInt];
-					// remplir le ByteBuffer
+				int longeur = refdef.getTypeColonne()[i].getSize();
+				char[] tabString = new char[longeur];
+				// remplir le ByteBuffer
 
-					for (int y = 0; y < longeurInt; y++) {
-						tabString[y] = bb.getChar();
+				for (int y = 0; y < longeur; y++) {
+					tabString[y] = bb.getChar();
 
-					}
-					values[i] = new String(tabString);
-				} else {
-					System.out.println("type de colonne non reconnu");
 				}
+				values[i] = new String(tabString);
+
+				break;
+			default:
+				System.out.println("type de colonne non reconnu");
 
 			}
 
@@ -94,5 +92,4 @@ public class Record {
 	public String[] getValues() {
 		return this.values;
 	}
-
 }
