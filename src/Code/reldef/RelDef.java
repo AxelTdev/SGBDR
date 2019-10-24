@@ -29,6 +29,22 @@ public class RelDef {
 		return this.nbColonne;
 	}
 
+	public int getFileIdx() {
+		return fileIdx;
+	}
+
+	public int getSlotCount() {
+		return slotCount;
+	}
+
+	public void setSlotCount(int v) {
+		slotCount = v;
+	}
+
+	public int getRecordSize() {
+		return recordSize;
+	}
+
 	public enum Type {
 		INT("int"), FLOAT("float"), STRING("string");
 
@@ -37,7 +53,7 @@ public class RelDef {
 
 		Type(String type) {
 			if (type.startsWith("string")) {
-				
+
 				this.value = "string";
 			} else {
 				this.value = type;
@@ -45,8 +61,6 @@ public class RelDef {
 			}
 
 		}
-
-		
 
 		public String getType() {
 			if (size > 0)
