@@ -34,22 +34,18 @@ public class HeapFile {
 
 	public PageId addDataPage() throws IOException {
 
-		System.out.println("add Data Page");
+	
 		BufferManager u = BufferManager.getInstance();
 		byte[] temp = u.getPage(new PageId(relDef.getFileIdx(), 0));// headerpage
 
 		ByteBuffer bb = ByteBuffer.wrap(temp);
 		bb.putInt(0, bb.getInt(0) + 1);
-		System.out.println("methode tets");
-		System.out.println(bb.getInt(0));
 		PageId nouvellePage = DiskManager.AddPage(relDef.getFileIdx());
 		// met a jour cases slot de la data page concerné
-		System.out.println("nb page");
-		System.out.println(nouvellePage.getPageIdx());
 		bb.putInt(4*nouvellePage.getPageIdx(), this.relDef.getSlotCount());
 		u.FreePage(new PageId(relDef.getFileIdx(), 0), 1);// libere la frame de la headerpage
 
-		System.out.println(" return add Data Page");
+		
 
 		return nouvellePage;
 
@@ -112,7 +108,7 @@ public class HeapFile {
 		byte[] recordByte = new byte[this.getReldef().getRecordSize()];
 		ByteBuffer bb = ByteBuffer.wrap(temp);
 		int y1 = 0;//compteur de record
-		// création du tableau de Record
+		// Savoir le nombre de record à créer
 		for (int i = 0; i < this.getReldef().getSlotCount(); i++) {
 			if(bb.get(i) == 1) {
 				y1++;
@@ -124,43 +120,34 @@ public class HeapFile {
 		
 		Record [] listRecord = new Record[y1]; 
 		
-				
+				//initialiser le tableau de records
 		for (int i = 0; i < y1; i++) {
 			
 			listRecord[i] = new Record(relDef);
-			
+			listRecord[i].setValues(new String[this.getReldef().getTypeColonne().length]);
 		}
 		
 
-		bb.position(this.getReldef().getSlotCount());
+		
 
-		for (int i = this.getReldef().getSlotCount() , x = 0; x <listRecord.length; i = i + this.getReldef().getRecordSize(), x++) {
+		
+			for(int i = 0, recordSize = this.getReldef().getSlotCount()  ; i < listRecord.length; i++, recordSize+=this.getReldef().getRecordSize()) {
+			recordByte = Arrays.copyOfRange(temp, recordSize  , recordSize +this.getReldef().getRecordSize());
+			bb = ByteBuffer.wrap(recordByte);
 			
-			listRecord[x].setValues(new String[this.getReldef().getTypeColonne().length]);
-			
-			// mise en forme du tab byte pour un record
-			
-			recordByte = Arrays.copyOfRange(temp, i, i+this.getReldef().getRecordSize());
-			
-			
-			listRecord[x].readFromBuffer(recordByte, 0);
+			listRecord[i].readFromBuffer(recordByte, 0);
 			
 			
+			}	
 			
-			
-		}
+		
 		return listRecord;
 	}
 
-	public static void main(String[] args) {
+	/**public static void main(String[] args) {
 		
-		//Type[] typeco = { Type.FLOAT, Type.INT, Type.FLOAT };
-		//String[] value = { "4.5", "4", "3.5" };
-		//r.setValues(value);
-		//rd.setTypeColonne(typeco);
 		
-		// deuxieme record a mettre
-		RelDef rd1 = new RelDef(1, 16, 10);
+		RelDef rd1 = new RelDef(1, 20, 5);
 		HeapFile h = new HeapFile(rd1);
 		Record r1 = new Record(rd1);
 		Record r2 =new Record (rd1);
@@ -168,10 +155,10 @@ public class HeapFile {
 		h.createNewOnDisk();
 		
 		
-		String[] value2 = {"axel", "toli"};
-		String [] value3 = {"yolo", "aure"};
-		Type t = new Type("string4");
-		Type t1 = new Type("string4");
+		String[] value2 = {"2.2", "5.5"};
+		String [] value3 = {"8.5", "6.6"};
+		Type t = new Type("float");
+		Type t1 = new Type("float");
 		Type[] type = {t, t1};
 		r1.setValues(value2);
 		r2.setValues(value3);
@@ -188,19 +175,26 @@ public class HeapFile {
 			
 			h.writeRecordToDataPage(r1, l1);
 			h.writeRecordToDataPage(r2, l1);
-			/**
-			BufferManager u = BufferManager.getInstance();
+			
+			/**BufferManager u = BufferManager.getInstance();
 			byte [] y = u.getPage(new PageId(h.relDef.getFileIdx(), 1));
 			ByteBuffer bb = ByteBuffer.wrap(y);
+			System.out.println("hey");
 			System.out.println(bb.get(1));
-			System.out.println(bb.getChar(h.relDef.getSlotCount()));
-			System.out.println(bb.getChar(h.relDef.getSlotCount()+h.relDef.getRecordSize()+2));
-			u.FreePage(new PageId(h.getReldef().getFileIdx(), 1), 0);
-			*/
+			String str = null;
+			char[] s = new char[8];
+			bb.position(h.relDef.getSlotCount());
+			for(int i = 0, k =0; i <8; i+=2 ,k++) {
+				s[k] = bb.getChar();
+			}
+			str = String.valueOf(s);
+			System.out.println(str);
 			
+			u.FreePage(new PageId(h.getReldef().getFileIdx(), 1), 0);
+					
 			Record [] l = h.getRecordsInDataPage(l1);
 			
-				System.out.println(l[1].getValues()[1]);
+				System.out.println(l[0].getValues()[0]);
 			
 			
 			
@@ -212,7 +206,7 @@ public class HeapFile {
 		
 		
 		
-	}
+	}*/
 	
 	
 

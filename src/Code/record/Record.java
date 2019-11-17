@@ -70,7 +70,9 @@ public class Record {
 		this.values = new String[this.refdef.getTypeColonne().length];
 		bb.position();
 		String str = null;
+		int position1 = 0;
 		for (int i = 0; i < refdef.getTypeColonne().length; i++) {
+			
 			switch (refdef.getTypeColonne()[i].getValue()) {
 			case "int":
 
@@ -83,24 +85,24 @@ public class Record {
 				break;
 			default :
 				int longeur = refdef.getTypeColonne()[i].getSize();
-				
-				byte[] tabString = new byte[longeur*2];
+				bb.position();
+				byte[] tabString = new byte[longeur];
 				// remplir le ByteBuffer
-				for(byte test : buff) {
-					System.out.println(test);
-				}
-				for (int y = 0; y < longeur; y++) {
+				char[] tabChar = new char[longeur];
+				
+				for (int y = 0, p = position1; y < longeur; y++, p+=2) {
 					tabString[y] = bb.get();
+					tabChar[y] = bb.getChar(p);
 					
 
 				}
-				String strTemp =  new String(tabString);
+				String strTemp =  String.valueOf(tabChar);
 				
 			
 				
 				
 				values[i] =strTemp;
-
+				position1 = longeur*2;
 				break;
 			
 
@@ -118,7 +120,7 @@ public class Record {
 		return this.values;
 	}
 	
-	public static void main(String [] args) {
+	/**public static void main(String [] args) {
 		
 		String t = "axe";
 		String t22 = "laurentlll";
@@ -132,7 +134,7 @@ public class Record {
 		
 		Type t3 = new Type("string3");
 		Type t4 = new Type("string10");
-		Type [] typeCol = { t3, t4};
+		Type [] typeCol = { t3,t4};
 		RelDef rel = new RelDef(1,17,2);
 		rel.setTypeColonne(typeCol);
 		Record r = new Record(rel);
@@ -150,6 +152,6 @@ public class Record {
 		//ByteBuffer bb = ByteBuffer.wrap(b);
 		/*for(int i = 0; i < b.length; i++) {
 			System.out.println(bb.get());
-		}*/
-	}
+		}
+	}*/
 }
