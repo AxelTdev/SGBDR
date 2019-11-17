@@ -1,7 +1,7 @@
 package Code.pages;
 
 public class PageId {
-
+	
 	private int fileIdx ,pageIdx;
 
 	public PageId(int fileIdx, int pageIdx) {

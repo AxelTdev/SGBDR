@@ -1,11 +1,13 @@
 package Code.main;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 import Code.dbManager.DBManager;
 
 public class Main {
-	public static void main(String[] args) {
+	static final boolean LOG = true;
+	public static void main(String[] args) throws ClassNotFoundException, IOException {
 		Scanner sc = new Scanner(System.in);
 		//DBManager dbm = new DBManager();
 

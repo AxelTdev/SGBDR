@@ -4,7 +4,7 @@ import Code.pages.PageId;
 import Code.util.Constants;
 
 public class Frame {
-	
+	static final boolean LOG = true;
 	private byte[] buff;
 	private PageId pg;
 	private int pin_count;

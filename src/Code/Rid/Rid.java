@@ -3,6 +3,7 @@ package Code.Rid;
 import Code.pages.PageId;
 
 public class Rid {
+	static final boolean LOG = true;
 	private PageId pg;
 	private int indice_case;
 

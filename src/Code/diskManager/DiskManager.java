@@ -8,8 +8,9 @@ import Code.pages.PageId;
 import Code.util.Constants;
 
 public class DiskManager {
-	private static int compteur_page = 1;
+	private static int compteur_page = 0;
 	private static DiskManager instance = null;
+	private static File f =null;
 
 	private DiskManager() {
 
@@ -23,50 +24,56 @@ public class DiskManager {
 	}
 
 	public static void CreateFile(int fileIdx) {
-
 		// DB/mets le fichier dans le repertoire DB
-		File file = new File("src/DB/Data_" + fileIdx + ".rf");
+		f = new File("src/DB/Data_" + fileIdx + ".rf");
 		try {
-			file.createNewFile();
+			f.createNewFile();
 		} catch (IOException e) {
 			e.getMessage();
 		}
 	}
 
 	public static PageId AddPage(int fileIdx) throws IOException {
-
+		System.out.println("utilisé " + compteur_page + "fois avant cet appel");
+		System.out.println("AddPage");
 		PageId p = new PageId(fileIdx, compteur_page);
 		compteur_page++;
 		byte[] buffer = new byte[Constants.pageSize];
+		
 
-		RandomAccessFile r = new RandomAccessFile("src/DB/Data_" + fileIdx + ".rf", "rw");
+		RandomAccessFile r = new RandomAccessFile(f, "rw");
 		r.write(buffer);
 		r.close();
-
+		System.out.println("return AddPage");
 		return p;
+		
 	}
 
-	public static void ReadPage(PageId p, byte[] buff) {
+	public static void ReadPage(PageId p, byte[] buff){
 		RandomAccessFile r = null;
 		try {
-			r = new RandomAccessFile("src/DB/Data_" + p.getFileIdx() + ".rf", "rw");
-		} catch (FileNotFoundException e1) {
+			if(f == null) {
+				System.out.println("fichier non créé, on ne peut pas récupérer le buffer");
+			}
+			r = new RandomAccessFile(f, "rw");
+			
+			
+			
+			r.read(buff);
+			
+		} catch (IOException e1) {
 			e1.getMessage();
 			e1.printStackTrace();
+			
 		}
-		try {
-			r.read(buff);
-		} catch (IOException e) {
-			e.getMessage();
-			e.printStackTrace();
-		}
-
+		
+		
 	}
 
 	public static void WritePage(PageId p, byte[] buff) {
 		RandomAccessFile r = null;
 		try {
-			r = new RandomAccessFile("src/DB/Data_" + p.getFileIdx() + ".rf", "rw");
+			r = new RandomAccessFile(f, "rw");
 		} catch (FileNotFoundException e1) {
 			e1.getMessage();
 			e1.printStackTrace();
@@ -87,14 +94,16 @@ public class DiskManager {
 
 		PageId PageId = DiskManager.AddPage(1);
 		byte[] buff = new byte[Constants.pageSize];
-		DiskManager.ReadPage(PageId, buff);
+		
+			DiskManager.ReadPage(PageId, buff);
+		
 		for (int i = 0; i < buff.length; i++) {
 			System.out.println(buff[i]);
 		}
-		String str = "bonjour";
-
-		DiskManager.WritePage(PageId, str.getBytes());
-		DiskManager.ReadPage(PageId, buff);
+		
+		
+			DiskManager.ReadPage(PageId, buff);
+		
 
 		for (int i = 0; i < buff.length; i++) {
 			System.out.println(buff[i]);

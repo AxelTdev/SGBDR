@@ -1,7 +1,9 @@
 package Code.reldef;
 
-public class RelDef {
+import Code.type.Type;
 
+public class RelDef {
+	static final boolean LOG = true;
 	private String nomRelation;
 
 	private int nbColonne;
@@ -45,38 +47,7 @@ public class RelDef {
 		return recordSize;
 	}
 
-	public enum Type {
-		INT("int"), FLOAT("float"), STRING("string");
-
-		private String value;
-		private int size;
-
-		Type(String type) {
-			if (type.startsWith("string")) {
-
-				this.value = "string";
-			} else {
-				this.value = type;
-				this.size = 0;
-			}
-
-		}
-
-		public String getType() {
-			if (size > 0)
-				return value + size;
-			else
-				return value;
-		}
-
-		public void setSize(int size) {
-			this.size = size;
-		}
-
-		public int getSize() {
-			return this.size;
-		}
-	}
+	
 
 	public Type[] getTypeColonne() {
 		return typeColonne;
