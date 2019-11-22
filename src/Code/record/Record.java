@@ -30,8 +30,8 @@ public class Record {
 					bb.putChar(tableauChar[y]);
 
 				}
-
 				continue;
+			
 			}
 
 			switch (refdef.getTypeColonne()[i].getValue()) {
@@ -68,28 +68,31 @@ public class Record {
 				char[] tabChar = new char[longeur];
 
 				for (int y = 0, p = position1; y < longeur; y++, p += 2) {
-					tabString[y] = bb.get();
 					tabChar[y] = bb.getChar(p);
 
 				}
 				String strTemp = String.valueOf(tabChar);
 
 				values[i] = strTemp;
-				position1 = longeur * 2;
-				break;
+				position1 = (longeur * 2);
+				bb.position(position1);
+				
+				continue;
 			}
+			
 			switch (refdef.getTypeColonne()[i].getValue()) {
 			case "int":
-
+				
 				str = Integer.toString(bb.getInt());
 				values[i] = str;
+				
 				break;
 			case "float":
 				str = Float.toString(bb.getFloat());
 				values[i] = str;
 				break;
 			default:
-
+				
 			}
 
 		}

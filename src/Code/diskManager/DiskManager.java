@@ -49,6 +49,7 @@ public class DiskManager {
 
 		try {
 			int compteur_page = nbr_page_fichier.get(fileIdx);
+			
 			p = new PageId(fileIdx, compteur_page + 1);
 			// on incrémente le nbr de page pour le fichier fileIdx (+1)
 			nbr_page_fichier.put(fileIdx, nbr_page_fichier.get(fileIdx) + 1);
@@ -58,7 +59,7 @@ public class DiskManager {
 			RandomAccessFile r = new RandomAccessFile("src/DB/Data_" + fileIdx + ".rf", "rw");
 			// on se positionne au bon index (à la bonne page) pour ajouter une nouvelle
 			// page
-			r.seek(Constants.pageSize * (p.getPageIdx() - 1));
+			r.seek(Constants.pageSize * (p.getPageIdx()-1));
 			r.write(buffer);
 			r.close();
 
@@ -79,8 +80,8 @@ public class DiskManager {
 				r.read(buff, 0, 100);
 			} else {
 				
-				System.out.println(Constants.pageSize * (p.getPageIdx() - 1));
-				r.seek(Constants.pageSize * (p.getPageIdx() - 1));
+				System.out.println(Constants.pageSize * (p.getPageIdx()));
+				r.seek(Constants.pageSize * (p.getPageIdx()-1));
 				r.read(buff);
 			}
 
@@ -105,8 +106,8 @@ public class DiskManager {
 				r.write(buff, 0, 100);
 			} else {
 				
-				System.out.println(Constants.pageSize * (p.getPageIdx() - 1));
-				r.seek(Constants.pageSize * (p.getPageIdx() - 1));
+				System.out.println("eez" + Constants.pageSize * (p.getPageIdx()));
+				r.seek(Constants.pageSize * (p.getPageIdx()-1));
 				r.write(buff);
 			}
 
