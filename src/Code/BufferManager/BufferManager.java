@@ -1,6 +1,8 @@
 package Code.BufferManager;
 
 
+import java.io.IOException;
+
 import Code.diskManager.DiskManager;
 import Code.frame.Frame;
 import Code.pages.PageId;
@@ -25,7 +27,7 @@ public class BufferManager {
 
 		boolean accesPage = false;
 		int i = 0;
-
+		byte [] temp = new byte[Constants.pageSize];
 		int compt = 0;
 		while (!accesPage) {
 			if (compt > 0) {
@@ -36,7 +38,8 @@ public class BufferManager {
 
 				if(buffer_pool[i].getIdPage() == null){//case vide
 					
-					DiskManager.ReadPage(pg, buffer_pool[i].getBuff());
+					DiskManager.ReadPage(pg, temp);
+					buffer_pool[i].setBuff(temp);
 					buffer_pool[i].setPin_count(1);
 
 					buffer_pool[i].setIdpage(pg);
@@ -52,6 +55,8 @@ public class BufferManager {
 					System.out.println(buffer_pool[i].getIdPage().getFileIdx());
 					buffer_pool[i].setPin_count(buffer_pool[i].getPin_count() + 1);
 					System.out.println("case occupée par meme page");
+					DiskManager.ReadPage(pg, temp);
+					buffer_pool[i].setBuff(temp);
 					accesPage = true;
 					System.out.println("etat de frame " + i);
 					System.out.println(buffer_pool[i].getPin_count());
@@ -64,7 +69,8 @@ public class BufferManager {
 					if (buffer_pool[i].getRef_bit() == 0) {
 						// remplacement
 						System.out.println("remplacement");
-						DiskManager.ReadPage(pg, buffer_pool[i].getBuff());
+						DiskManager.ReadPage(pg, temp);
+						buffer_pool[i].setBuff(temp);
 						buffer_pool[i].setPin_count(1);
 
 						buffer_pool[i].setIdpage(pg);
@@ -135,7 +141,7 @@ public class BufferManager {
 		return this.buffer_pool;
 	}
 
-	/*public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 
 		DiskManager.CreateFile(1);
 		BufferManager u = new BufferManager();
@@ -148,6 +154,7 @@ public class BufferManager {
 		}
 		System.out.println("appel 1");
 		u.getPage(id[0]);
+		
 		System.out.println("appel 2");
 		u.getPage(id[0]);
 		System.out.println("appel 3");
@@ -156,6 +163,6 @@ public class BufferManager {
 		u.FreePage(id[0], 0);
 		u.getPage(id[2]);
 
-	}*/
+	}
 
 }

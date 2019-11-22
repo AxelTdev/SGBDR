@@ -1,5 +1,6 @@
 package Code.frame;
 
+import Code.diskManager.DiskManager;
 import Code.pages.PageId;
 import Code.util.Constants;
 

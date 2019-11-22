@@ -6,9 +6,7 @@ import Code.type.Type;
 import Code.util.Constants;
 
 public class Record {
-	private static final Code.type.Type INT = new Code.type.Type("int");
-	private static final Code.type.Type FLOAT = new Code.type.Type("float");
-	
+
 	private RelDef refdef;
 	private String[] values;
 
@@ -22,9 +20,22 @@ public class Record {
 		bb.position(position);
 
 		for (int i = 0; i < refdef.getTypeColonne().length; i++) {
+			if (refdef.getTypeColonne()[i].getValue().startsWith("string")) {
+				int longeur = values[i].length();
+
+				char[] tableauChar = values[i].toCharArray();
+
+				for (int y = 0; y < longeur; y++) {
+
+					bb.putChar(tableauChar[y]);
+
+				}
+
+				continue;
+			}
 
 			switch (refdef.getTypeColonne()[i].getValue()) {
-			
+
 			case "int":
 				int a = Integer.parseInt(values[i]);
 				bb.putInt(a);
@@ -34,32 +45,8 @@ public class Record {
 				float b = Float.parseFloat(values[i]);
 				bb.putFloat(b);
 				break;
-			default :
-				System.out.println("rentre string");
-				int longeur = values[i].length();
-				System.out.println("longeur des typecol");
-				System.out.println(longeur);
-				System.out.println("longeur des typecol");
-				char[] tableauChar = values[i].toCharArray();
-				System.out.println("debut tableau de char");
-				for (int y = 0; y < longeur; y++) {
-					
-					bb.putChar(tableauChar[y]);
-					
-					
-				}
-				for (int y = 0; y < longeur*2; y =y+2) {
-					
-					System.out.println(bb.getChar(y));
-					
-					
-				}
-				
-				
-				System.out.println("fin tableau de char");
-				break;
+			default:
 
-			
 			}
 
 		}
@@ -71,8 +58,26 @@ public class Record {
 		bb.position();
 		String str = null;
 		int position1 = 0;
+
 		for (int i = 0; i < refdef.getTypeColonne().length; i++) {
-			
+			if (refdef.getTypeColonne()[i].getValue().startsWith("string")) {
+				int longeur = refdef.getTypeColonne()[i].getSize();
+				bb.position();
+				byte[] tabString = new byte[longeur];
+				// remplir le ByteBuffer
+				char[] tabChar = new char[longeur];
+
+				for (int y = 0, p = position1; y < longeur; y++, p += 2) {
+					tabString[y] = bb.get();
+					tabChar[y] = bb.getChar(p);
+
+				}
+				String strTemp = String.valueOf(tabChar);
+
+				values[i] = strTemp;
+				position1 = longeur * 2;
+				break;
+			}
 			switch (refdef.getTypeColonne()[i].getValue()) {
 			case "int":
 
@@ -83,33 +88,22 @@ public class Record {
 				str = Float.toString(bb.getFloat());
 				values[i] = str;
 				break;
-			default :
-				int longeur = refdef.getTypeColonne()[i].getSize();
-				bb.position();
-				byte[] tabString = new byte[longeur];
-				// remplir le ByteBuffer
-				char[] tabChar = new char[longeur];
-				
-				for (int y = 0, p = position1; y < longeur; y++, p+=2) {
-					tabString[y] = bb.get();
-					tabChar[y] = bb.getChar(p);
-					
-
-				}
-				String strTemp =  String.valueOf(tabChar);
-				
-			
-				
-				
-				values[i] =strTemp;
-				position1 = longeur*2;
-				break;
-			
+			default:
 
 			}
 
 		}
 
+	}
+
+	@Override
+	public String toString() {
+		String str = "valeurs du record \n";
+		for (String value : this.getValues()) {
+			str += value + ", ";
+		}
+
+		return str;
 	}
 
 	public void setValues(String[] temp) {
@@ -119,39 +113,30 @@ public class Record {
 	public String[] getValues() {
 		return this.values;
 	}
-	
-	/**public static void main(String [] args) {
-		
-		String t = "axe";
-		String t22 = "laurentlll";
-		
-		byte [] l = t.getBytes();
-		byte[] l1 = t22.getBytes();
-		
-		byte[] c = new byte[l.length + l1.length];
-		System.arraycopy(l, 0, c, 0, l.length);
-		System.arraycopy(l1, 0, c, l.length, l1.length);
-		
-		Type t3 = new Type("string3");
-		Type t4 = new Type("string10");
-		Type [] typeCol = { t3,t4};
-		RelDef rel = new RelDef(1,17,2);
-		rel.setTypeColonne(typeCol);
-		Record r = new Record(rel);
-		r.readFromBuffer(c, 0);
-		
-		for(int i = 0; i <r.values.length; i++) {
-			System.out.println(r.values[i]);
-			System.out.println("longeur des string");
-			System.out.println(rel.getTypeColonne()[i].getSize());
-			
-		}
-		
-		//byte [] b = new byte[1100];
-		//r.writeToBuffer(b, 0);
-		//ByteBuffer bb = ByteBuffer.wrap(b);
-		/*for(int i = 0; i < b.length; i++) {
-			System.out.println(bb.get());
-		}
-	}*/
+
+	/**
+	 * public static void main(String [] args) {
+	 * 
+	 * String t = "axe"; String t22 = "laurentlll";
+	 * 
+	 * byte [] l = t.getBytes(); byte[] l1 = t22.getBytes();
+	 * 
+	 * byte[] c = new byte[l.length + l1.length]; System.arraycopy(l, 0, c, 0,
+	 * l.length); System.arraycopy(l1, 0, c, l.length, l1.length);
+	 * 
+	 * Type t3 = new Type("string3"); Type t4 = new Type("string10"); Type []
+	 * typeCol = { t3,t4}; RelDef rel = new RelDef(1,17,2);
+	 * rel.setTypeColonne(typeCol); Record r = new Record(rel); r.readFromBuffer(c,
+	 * 0);
+	 * 
+	 * for(int i = 0; i <r.values.length; i++) { System.out.println(r.values[i]);
+	 * System.out.println("longeur des string");
+	 * System.out.println(rel.getTypeColonne()[i].getSize());
+	 * 
+	 * }
+	 * 
+	 * //byte [] b = new byte[1100]; //r.writeToBuffer(b, 0); //ByteBuffer bb =
+	 * ByteBuffer.wrap(b); /*for(int i = 0; i < b.length; i++) {
+	 * System.out.println(bb.get()); } }
+	 */
 }
