@@ -38,6 +38,10 @@ public class RelDef {
 	public int getSlotCount() {
 		return slotCount;
 	}
+	
+	public String getNomRelation() {
+		return nomRelation;
+	}
 
 	public void setSlotCount(int v) {
 		slotCount = v;

@@ -15,6 +15,10 @@ public class Record {
 
 	}
 
+	public void setReldef(RelDef reldef) {
+		this.refdef = reldef;
+	}
+
 	public void writeToBuffer(byte[] buff, int position) {
 		ByteBuffer bb = ByteBuffer.wrap(buff);
 		bb.position(position);
@@ -31,7 +35,7 @@ public class Record {
 
 				}
 				continue;
-			
+
 			}
 
 			switch (refdef.getTypeColonne()[i].getValue()) {
@@ -76,23 +80,23 @@ public class Record {
 				values[i] = strTemp;
 				position1 = (longeur * 2);
 				bb.position(position1);
-				
+
 				continue;
 			}
-			
+
 			switch (refdef.getTypeColonne()[i].getValue()) {
 			case "int":
-				
+
 				str = Integer.toString(bb.getInt());
 				values[i] = str;
-				
+
 				break;
 			case "float":
 				str = Float.toString(bb.getFloat());
 				values[i] = str;
 				break;
 			default:
-				
+
 			}
 
 		}
@@ -102,10 +106,10 @@ public class Record {
 	@Override
 	public String toString() {
 		String str = "valeurs du record \n";
-		for (String value : this.getValues()) {
-			str += value + ", ";
+		for (int i = 0; i < this.getValues().length - 1; i++) {
+			str += this.getValues()[i] + " ; ";
 		}
-
+		str +=this.getValues()[this.getValues().length-1];
 		return str;
 	}
 
@@ -117,29 +121,14 @@ public class Record {
 		return this.values;
 	}
 
-	/**
-	 * public static void main(String [] args) {
-	 * 
-	 * String t = "axe"; String t22 = "laurentlll";
-	 * 
-	 * byte [] l = t.getBytes(); byte[] l1 = t22.getBytes();
-	 * 
-	 * byte[] c = new byte[l.length + l1.length]; System.arraycopy(l, 0, c, 0,
-	 * l.length); System.arraycopy(l1, 0, c, l.length, l1.length);
-	 * 
-	 * Type t3 = new Type("string3"); Type t4 = new Type("string10"); Type []
-	 * typeCol = { t3,t4}; RelDef rel = new RelDef(1,17,2);
-	 * rel.setTypeColonne(typeCol); Record r = new Record(rel); r.readFromBuffer(c,
-	 * 0);
-	 * 
-	 * for(int i = 0; i <r.values.length; i++) { System.out.println(r.values[i]);
-	 * System.out.println("longeur des string");
-	 * System.out.println(rel.getTypeColonne()[i].getSize());
-	 * 
-	 * }
-	 * 
-	 * //byte [] b = new byte[1100]; //r.writeToBuffer(b, 0); //ByteBuffer bb =
-	 * ByteBuffer.wrap(b); /*for(int i = 0; i < b.length; i++) {
-	 * System.out.println(bb.get()); } }
-	 */
+	
+	  public static void main(String [] args) {
+	  
+	  Record rd = new Record(new RelDef(1,5,8));
+	  String [] temp = {"yo", "ttt", "eze"};
+	  rd.setValues(temp);
+	  System.out.print(rd);
+	 
+	  }
+	 
 }

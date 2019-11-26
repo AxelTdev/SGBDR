@@ -101,6 +101,16 @@ public class BufferManager {
 		for (int i = 0; i < buffer_pool.length;i++) {
 			System.out.println("boucle freepagee");
 			if(buffer_pool[i].getIdPage() == null) {
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
 				//rien faire au cas ou pas adresse
 			}
 			if (buffer_pool[i].getIdPage().getPageIdx() == pg.getPageIdx()) {
@@ -135,6 +145,7 @@ public class BufferManager {
 			buffer_pool[i].setPin_count(0);
 			buffer_pool[i].setRef_bit(0);
 		}
+		
 	}
 
 	public Frame[] getBufferManager() {

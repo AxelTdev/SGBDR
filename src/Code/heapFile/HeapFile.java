@@ -91,11 +91,13 @@ public class HeapFile {
 			if (bb.get(i) == 0) {// slot vide
 				bb.put(i, (byte) 1);// mise a jour du slot en occupé
 				r.writeToBuffer(temp, 0);// recuperer dans le buffer le tableau values - position 0
-				indiceSlot = (this.getReldef().getSlotCount()) + i * this.getReldef().getRecordSize();// position ou
+				indiceSlot = (this.getReldef().getSlotCount()-1) + i * this.getReldef().getRecordSize();// position ou
 				// mettre le record
-				bb.position(indiceSlot - 1);// position ou mettre le record - 1 car apres le bb.put bb avance de 1
+				bb.position(indiceSlot + 1);// position ou mettre le record - 1 car apres le bb.put bb avance de 1
 				bb.put(temp);
-
+				System.out.println("writepage byte");
+				System.out.println(Arrays.toString(tempByte));
+				System.out.println("abc" +bb.getChar(4));
 				DiskManager.WritePage(pg, tempByte);
 
 				u.FreePage(pg, 1);
@@ -148,12 +150,13 @@ public class HeapFile {
 
 		for (int i = 0, recordSize = this.getReldef().getSlotCount(); i < listRecord.length; i++, recordSize += this
 				.getReldef().getRecordSize()) {
-			recordByte = Arrays.copyOfRange(temp, recordSize - 1, recordSize + this.getReldef().getRecordSize());
+			recordByte = Arrays.copyOfRange(temp, recordSize , recordSize + this.getReldef().getRecordSize());
 			bb = ByteBuffer.wrap(recordByte);
 
 			listRecord[i].readFromBuffer(recordByte, 0);
 
 		}
+		System.out.println("getPage array");
 		System.out.println(Arrays.toString(recordByte));
 		u.FreePage(pg, 0);
 		return listRecord;
@@ -174,15 +177,12 @@ public class HeapFile {
 		int nbPage = bb.getInt(0);
 		System.out.println(nbPage + "ezdez");
 		Record[] rdList = null;
-		for (int i = 2; i <= nbPage; i++) {
-			rdList = h.getRecordsInDataPage(new PageId(this.relDef.getFileIdx(), i));
-			u.FreePage(HeapFile.HEADER_PAGE, i);
-			if (i == 1)
-				System.out.println("dddd" + rdList[0]);
+		for (int i = 1; i <= nbPage; i++) {			
+			rdList = h.getRecordsInDataPage(new PageId(this.relDef.getFileIdx(), i + 1));//Pour éviter la header page
 			Collections.addAll(l, rdList);
 
 		}
-
+		
 		Record[] finalTemp = new Record[l.size()];
 		for (int i = 0; i < finalTemp.length; i++) {
 			finalTemp[i] = l.get(i);
@@ -202,14 +202,17 @@ public class HeapFile {
 		Record r2 = new Record(rd1);
 
 		String[] t = { "kaxel" };
+		String [] test2 = {"cuirl"};
 		r1.setValues(t);
-		String[] temp45 = t;
-		r2.setValues(temp45);
+	
 		Type t1 = new Type("string5");
 		Type t2 = new Type("int");
 		Type t3 = new Type("int");
 		Type[] type = { t1 };
 		rd1.setTypeColonne(type);
+		r2.setValues(test2);
+		
+		
 
 		h.createNewOnDisk();
 
@@ -221,6 +224,11 @@ public class HeapFile {
 			h.InsertRecord(r1);
 			h.InsertRecord(r1);
 			h.InsertRecord(r1);
+			h.InsertRecord(r1);
+			h.InsertRecord(r2);
+			h.InsertRecord(r1);
+			
+		
 
 			Record[] lol = h.GetAllRecords();
 
