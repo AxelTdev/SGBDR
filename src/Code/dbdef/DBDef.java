@@ -16,7 +16,7 @@ public class DBDef implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static ArrayList<RelDef> reldef = new ArrayList<>();//jai mit en public sinon je peux acceder dans la classe FileManager
-	private static int nbRelation = 0;
+	public static int nbRelation = 0;//J'ai mit en public aussi pour lutiliser sans insancier et activer la serialisation
 
 	private static DBDef instance = null;
 

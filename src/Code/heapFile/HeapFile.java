@@ -82,8 +82,10 @@ public class HeapFile {
 	public Rid writeRecordToDataPage(Record r, PageId pg) {
 		BufferManager u = BufferManager.getInstance();
 		int indiceSlot = 0;
-		byte[] tempByte = new byte[Constants.frameCount];
+		byte[] tempByte = null;
+		System.out.println("heloo " + pg.getPageIdx());
 		tempByte = u.getPage(pg);
+		System.out.println("ddddd" + tempByte.length);
 
 		ByteBuffer bb = ByteBuffer.wrap(tempByte);
 		byte[] temp = new byte[this.getReldef().getRecordSize()];
@@ -91,9 +93,9 @@ public class HeapFile {
 			if (bb.get(i) == 0) {// slot vide
 				bb.put(i, (byte) 1);// mise a jour du slot en occupé
 				r.writeToBuffer(temp, 0);// recuperer dans le buffer le tableau values - position 0
-				indiceSlot = (this.getReldef().getSlotCount()-1) + i * this.getReldef().getRecordSize();// position ou
+				indiceSlot = (this.getReldef().getSlotCount()) + i * this.getReldef().getRecordSize();// position ou
 				// mettre le record
-				bb.position(indiceSlot + 1);// position ou mettre le record - 1 car apres le bb.put bb avance de 1
+				bb.position(indiceSlot);
 				bb.put(temp);
 				System.out.println("writepage byte");
 				System.out.println(Arrays.toString(tempByte));
@@ -138,6 +140,8 @@ public class HeapFile {
 			}
 
 		}
+		
+		System.out.println("slot count" + this.relDef.getSlotCount());
 
 		Record[] listRecord = new Record[y1];
 
@@ -158,13 +162,18 @@ public class HeapFile {
 		}
 		System.out.println("getPage array");
 		System.out.println(Arrays.toString(recordByte));
+		
+		
 		u.FreePage(pg, 0);
 		return listRecord;
 	}
 
-	public Rid InsertRecord(Record rd) {
+	public Rid InsertRecord(Record rd) throws IOException {
 		PageId pg = this.getFreeDataPageId();
-
+		if(pg == null) {//si pas de pages de créé ou pas de pages dispo ajouter une page je sais pas si un bon dajouter ici une page a voir
+			pg = this.addDataPage();
+			System.out.println(pg.getPageIdx() + "ss");
+		}
 		return this.writeRecordToDataPage(rd, pg);
 	}
 

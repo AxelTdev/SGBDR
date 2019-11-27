@@ -10,10 +10,10 @@ import Code.util.Constants;
 
 public class BufferManager {
 	public static final BufferManager INSTANCE = new BufferManager();
-	private Frame[] buffer_pool;
+	private Frame[] buffer_pool = new Frame[Constants.frameCount];
 
 	private BufferManager() {
-		this.buffer_pool = new Frame[Constants.frameCount];
+	
 		for (int i = 0; i < Constants.frameCount; i++) {
 			this.buffer_pool[i] = new Frame();
 		}

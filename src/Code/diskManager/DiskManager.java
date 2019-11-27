@@ -77,7 +77,7 @@ public class DiskManager {
 			// on se positionne à la bonne page pour commencer à lire
 			if (p.getPageIdx() == 0) {
 				
-				r.read(buff, 0, 100);
+				r.read(buff, 0, Constants.pageSize);
 			} else {
 				
 				System.out.println(Constants.pageSize * (p.getPageIdx()));
@@ -103,7 +103,7 @@ public class DiskManager {
 			// on se positionne à la bonne page pour commencer à lire
 			if (p.getPageIdx() == 0) {
 				
-				r.write(buff, 0, 100);
+				r.write(buff, 0, Constants.pageSize);
 			} else {
 				
 				System.out.println("eez" + Constants.pageSize * (p.getPageIdx()));

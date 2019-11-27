@@ -64,10 +64,11 @@ public class Record {
 		int position1 = 0;
 
 		for (int i = 0; i < refdef.getTypeColonne().length; i++) {
+		
 			if (refdef.getTypeColonne()[i].getValue().startsWith("string")) {
 				int longeur = refdef.getTypeColonne()[i].getSize();
 				bb.position();
-				byte[] tabString = new byte[longeur];
+				
 				// remplir le ByteBuffer
 				char[] tabChar = new char[longeur];
 
@@ -76,9 +77,9 @@ public class Record {
 
 				}
 				String strTemp = String.valueOf(tabChar);
-
+				
 				values[i] = strTemp;
-				position1 = (longeur * 2);
+				position1 += (longeur * 2);
 				bb.position(position1);
 
 				continue;
@@ -89,11 +90,14 @@ public class Record {
 
 				str = Integer.toString(bb.getInt());
 				values[i] = str;
-
+				position1 += 4;
+				bb.position(position1);
 				break;
 			case "float":
 				str = Float.toString(bb.getFloat());
 				values[i] = str;
+				position1 += 4;
+				bb.position(position1);
 				break;
 			default:
 
@@ -109,7 +113,7 @@ public class Record {
 		for (int i = 0; i < this.getValues().length - 1; i++) {
 			str += this.getValues()[i] + " ; ";
 		}
-		str +=this.getValues()[this.getValues().length-1];
+		str += this.getValues()[this.getValues().length - 1];
 		return str;
 	}
 
@@ -121,14 +125,13 @@ public class Record {
 		return this.values;
 	}
 
-	
-	  public static void main(String [] args) {
-	  
-	  Record rd = new Record(new RelDef(1,5,8));
-	  String [] temp = {"yo", "ttt", "eze"};
-	  rd.setValues(temp);
-	  System.out.print(rd);
-	 
-	  }
-	 
+	public static void main(String[] args) {
+
+		Record rd = new Record(new RelDef(1, 5, 8));
+		String[] temp = { "yo", "ttt", "eze" };
+		rd.setValues(temp);
+		System.out.print(rd);
+
+	}
+
 }
