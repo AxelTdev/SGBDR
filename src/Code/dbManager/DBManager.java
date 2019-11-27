@@ -13,6 +13,7 @@ import java.util.List;
 import Code.BufferManager.BufferManager;
 import Code.dbdef.DBDef;
 import Code.fileManager.FileManager;
+import Code.heapFile.HeapFile;
 import Code.record.Record;
 import Code.reldef.RelDef;
 import Code.type.Type;
@@ -80,6 +81,9 @@ public class DBManager {
 			Select(str);
 			break;
 
+		case "delete":
+			Delete(str);
+			break;
 		default:
 			System.out.println("veuillez réessayer");
 			break;
@@ -197,16 +201,75 @@ public class DBManager {
 	public static void SelectAll(String str) {
 		String[] tab = str.split(" ");
 
-		Record[] tabRecord = null;
+		List<Record> listRecord = null;
 		FileManager fm = FileManager.getInstance();
-		tabRecord = fm.SelectAllFromRelation(tab[1]);
+		listRecord = fm.SelectAllFromRelation(tab[1]);
 		StringBuilder str1 = new StringBuilder();
-		for (int i = 0; i < tabRecord.length; i++) {
-			str1.append(tabRecord[i]);
+		for (int i = 0; i < listRecord.size(); i++) {
+			str1.append(listRecord.get(i));
 			str1.append("\n");
 		}
-		str1.append("\n Total records = " + tabRecord.length);
+		str1.append("\n Total records = " + listRecord.size());
 		System.out.println(str1);
+	}
+/*
+ * 
+ *  Etape 1 : je fait une sélection sur les Records à supprimée, toute la relation (tous les Records) pour obtenir les Records qui respectent la condition
+ *  Etape 2 : Je réinitialise la DataPage
+ *  Etape 3 : je remets les Records à la chaine dans le fichier
+ */
+	public static void Delete(String str) throws IOException {
+		FileManager fm = FileManager.getInstance();
+		String[] tab = str.split(" ");
+		List<Record> listRecordAsupprimer = new ArrayList<>();
+		listRecordAsupprimer = fm.SelectFromRelation(tab[1], Integer.parseInt(tab[2]), tab[3]);
+		int nbSupp = listRecordAsupprimer.size();
+
+		List<Record> listRecordTotal = new ArrayList<>();
+
+		listRecordTotal = fm.SelectAllFromRelation(tab[1]);
+		
+		List<Record> listRecordFinal = new ArrayList<>();
+
+		boolean mettre;
+
+		for (int i = 0; i < listRecordTotal.size(); i++) {
+			mettre = true;
+			for (int y = 0; y < listRecordAsupprimer.size(); y++) {
+
+				if (listRecordTotal.get(i).equals(listRecordAsupprimer.get(y))) {
+
+					mettre = false;
+					break;
+
+				}
+
+			}
+			if (mettre) {
+				listRecordFinal.add(listRecordTotal.get(i));
+			}
+			
+			
+
+		}
+		
+		// mise a zero du fichier dataPage
+		HeapFile hf = null;
+		for (int i = 0; i < fm.getHeapFile().size(); i++) {
+			if (fm.getHeapFile().get(i).getReldef().getNomRelation().equals(tab[1])) {
+				hf = fm.getHeapFile().get(i);
+
+			}
+		}
+		File f = new File("src/DB/Data_" + hf.getReldef().getFileIdx() + ".rf");
+		f.delete();
+		hf.createNewOnDisk();
+
+		for (int i = 0; i < listRecordFinal.size(); i++) {
+			fm.InsertRecordInRelation(listRecordFinal.get(i), hf.getReldef().getNomRelation());
+		}
+		System.out.println("Total deleted records = " + listRecordAsupprimer.size());
+		
 	}
 
 	public static void Select(String str) {
@@ -225,26 +288,25 @@ public class DBManager {
 
 	public static void main(String[] args) {
 		try {
-			// probleme avec les strings
-			/*
-			 * DBManager.ProcessCommand("clean");
-			 * 
-			 * DBManager.ProcessCommand("create R1 3 int string2 int");
-			 * 
-			 * for(int i = 0; i < 191; i++) { DBManager.ProcessCommand("insert R1 5 de 5");
-			 * } DBManager.ProcessCommand("selectall R1");
-			 */
 
-			DBManager.ProcessCommand("create S 8 string2 int string4 float string5 int int int");
+			DBManager.ProcessCommand("clean");
 
-			DBManager.ProcessCommand("insertall S S1.csv");
+			DBManager.ProcessCommand("create R 3 int string3 int");
+			DBManager.ProcessCommand("insert R 1 aab 2");
+			DBManager.ProcessCommand("insert R 2 abc 2");
+			DBManager.ProcessCommand("insert R 1 agh 1");
+			
+			DBManager.ProcessCommand("selectall R");
+			DBManager.ProcessCommand("delete R 3 2");
+			DBManager.ProcessCommand("selectall R");
 
-			DBManager.ProcessCommand("selectall S ");
+			/* DBManager.ProcessCommand("create S 8 string2 int string4 float string5 int int int");
 
-			DBManager.ProcessCommand("select S 2 19");
+			 DBManager.ProcessCommand("insertall S S1.csv");
 
-			DBManager.ProcessCommand("select S 3 Nati");
-
+			DBManager.ProcessCommand("delete S 2 1");
+			DBManager.ProcessCommand("selectall S");
+			*/
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

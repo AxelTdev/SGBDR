@@ -5,7 +5,7 @@ import Code.reldef.RelDef;
 import Code.type.Type;
 import Code.util.Constants;
 
-public class Record {
+public class Record  {
 
 	private RelDef refdef;
 	private String[] values;
@@ -64,11 +64,11 @@ public class Record {
 		int position1 = 0;
 
 		for (int i = 0; i < refdef.getTypeColonne().length; i++) {
-		
+
 			if (refdef.getTypeColonne()[i].getValue().startsWith("string")) {
 				int longeur = refdef.getTypeColonne()[i].getSize();
 				bb.position();
-				
+
 				// remplir le ByteBuffer
 				char[] tabChar = new char[longeur];
 
@@ -77,7 +77,7 @@ public class Record {
 
 				}
 				String strTemp = String.valueOf(tabChar);
-				
+
 				values[i] = strTemp;
 				position1 += (longeur * 2);
 				bb.position(position1);
@@ -128,10 +128,31 @@ public class Record {
 	public static void main(String[] args) {
 
 		Record rd = new Record(new RelDef(1, 5, 8));
+		Record rd1 = new Record(new RelDef(1, 5, 8));
 		String[] temp = { "yo", "ttt", "eze" };
+		String[] temp2 = {"dd" ,"fefze", "ef"};
 		rd.setValues(temp);
-		System.out.print(rd);
+		rd1.setValues(temp2);
+		System.out.print(rd.equals(rd1));
 
+	}
+
+	@Override
+	public boolean equals(Object rd) {
+		boolean result = true;
+		if(rd instanceof Record) {
+	
+		for (int i = 0; i < this.getValues().length; i++) {
+			if (!(this.getValues()[i].equals(((Record) rd).getValues()[i]))) {
+				result = false;
+				break;
+			}
+		}
+		}else {
+			result = false;
+		}
+
+		return result;
 	}
 
 }
