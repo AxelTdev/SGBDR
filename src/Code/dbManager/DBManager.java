@@ -325,12 +325,12 @@ public class DBManager {
 
 			DBManager.ProcessCommand("create R 3 int string3 int");
 			DBManager.ProcessCommand("insert R 1 aab 2");
-			DBManager.ProcessCommand("insert R 2 abc 2");
+			for(int i = 0; i < 412; i++) {
+				DBManager.ProcessCommand("insert R 2 abc 2");
+			}
+			
 			DBManager.ProcessCommand("insert R 1 agh 1");
-			DBManager.ProcessCommand("selectall R ");
-			DBManager.ProcessCommand("delete R 2 aab");
-			DBManager.ProcessCommand("selectall R ");
-			DBManager.ProcessCommand("createindex R 2 2");
+			
 			
 
 			/*
