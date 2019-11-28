@@ -1,17 +1,37 @@
 package Code.record;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import Code.reldef.RelDef;
 import Code.type.Type;
 import Code.util.Constants;
 
-public class Record  {
+public class Record {
 
 	private RelDef refdef;
 	private String[] values;
 
 	public Record(RelDef reldef) {
 		this.refdef = reldef;
+
+	}
+	public static void main(String[] args) {
+
+		Record rd = new Record(new RelDef(1, 5, 8));
+		Record rd1 = new Record(new RelDef(1, 5, 8));
+		String[] temp = { "yo", "3", "eze" };
+		String[] temp2 = { "dd", "2", "ef" };
+		rd.setValues(temp);
+		rd1.setValues(temp2);
+		List<Record> l = new ArrayList<>();
+		l.add(rd);
+		l.add(rd1);
+		Collections.sort(l, rd.new triParColonne(1));
+		System.out.print(l);
 
 	}
 
@@ -125,34 +145,42 @@ public class Record  {
 		return this.values;
 	}
 
-	public static void main(String[] args) {
-
-		Record rd = new Record(new RelDef(1, 5, 8));
-		Record rd1 = new Record(new RelDef(1, 5, 8));
-		String[] temp = { "yo", "ttt", "eze" };
-		String[] temp2 = {"dd" ,"fefze", "ef"};
-		rd.setValues(temp);
-		rd1.setValues(temp2);
-		System.out.print(rd.equals(rd1));
-
-	}
-
 	@Override
 	public boolean equals(Object rd) {
 		boolean result = true;
-		if(rd instanceof Record) {
-	
-		for (int i = 0; i < this.getValues().length; i++) {
-			if (!(this.getValues()[i].equals(((Record) rd).getValues()[i]))) {
-				result = false;
-				break;
+		if (rd instanceof Record) {
+
+			for (int i = 0; i < this.getValues().length; i++) {
+				if (!(this.getValues()[i].equals(((Record) rd).getValues()[i]))) {
+					result = false;
+					break;
+				}
 			}
-		}
-		}else {
+		} else {
 			result = false;
 		}
 
 		return result;
 	}
+	//public pour linstancier ailleur
+	 public class triParColonne implements Comparator<Record> {
+		private int nb_colonne;
+
+		public triParColonne(int nb_colonne) {
+			this.nb_colonne = nb_colonne;
+		}
+		public triParColonne() {
+			this.nb_colonne = 1;
+		}
+
+		@Override
+		public int compare(Record o1, Record o2) {
+			return o2.getValues()[this.nb_colonne].compareTo(o1.getValues()[this.nb_colonne]);
+
+		}
+
+	}
+
+	
 
 }
