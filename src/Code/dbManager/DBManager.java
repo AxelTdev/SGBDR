@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import Code.BTree.Arbre;
 import Code.BTree.Noeud;
@@ -82,6 +83,9 @@ public class DBManager {
 			SelectAll(str);
 
 			break;
+		case "join":
+			join(str);
+			break;
 		case "select":
 			Select(str);
 			break;
@@ -148,7 +152,22 @@ public class DBManager {
 		dbd.reset();
 
 	}
-
+	public static void join(String str) {
+		String tab[] = str.split(" ");
+		
+		String nomR1 = tab[1];
+		String nomR2 = tab[2];
+		int col1 = Integer.parseInt(tab[3]);
+		int col2 = Integer.parseInt(tab[4]);
+		
+		col1--;//pour atteindre la bonne colonne
+		col2--;
+		
+		FileManager a  = FileManager.getInstance();
+		
+		System.out.println(a.join(nomR1,nomR2,col1,col2));
+		
+	}
 	public static void Insert(String str) throws IOException {
 		FileManager fm = FileManager.getInstance();
 		String[] tab = str.split(" ");
@@ -324,13 +343,16 @@ public class DBManager {
 			DBManager.ProcessCommand("clean");
 
 			DBManager.ProcessCommand("create R 3 int string3 int");
-			DBManager.ProcessCommand("insert R 1 aab 2");
-			for(int i = 0; i < 412; i++) {
+			DBManager.ProcessCommand("create R1 3 int string3 int");
+			DBManager.ProcessCommand("insert R 3 agh 4");
+			for(int i = 0; i < 100; i++) {
 				DBManager.ProcessCommand("insert R 2 abc 2");
 			}
 			
-			DBManager.ProcessCommand("insert R 1 agh 1");
 			
+			DBManager.ProcessCommand("insert R1 1 agh 1");
+			DBManager.ProcessCommand("insert R1 1 agh 1");
+			DBManager.ProcessCommand("join R R1 2 2");
 			
 
 			/*

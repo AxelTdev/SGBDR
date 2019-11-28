@@ -34,6 +34,38 @@ public class FileManager {
 		return heapFile;
 	}
 
+	public List<Record> join(String relation1, String relation2, int col1, int col2) {
+		
+		
+		List<Record> listRecordR1 = SelectAllFromRelation(relation1);
+		List<Record> listRecordR2 = SelectAllFromRelation(relation2);
+		List<Record> recordListFinal = new ArrayList<>();
+		System.out.println("nb col 1" + listRecordR1.get(0).getValues()[col1] + "nb col2" + listRecordR2.get(0).getValues()[col2]);
+		System.out.println("size relation 1 " + listRecordR1.size() + "size relation 2 " + listRecordR2.size());
+		for(int i = 0; i < listRecordR1.size(); i++) {
+			
+			for(int y = 0; y < listRecordR2.size(); y++) {
+				
+				if(listRecordR1.get(i).getValues()[col1].equals(listRecordR2.get(y).getValues()[col2])) {
+					
+					recordListFinal.add(listRecordR1.get(i));
+					
+					
+					break;
+				}
+		}
+			
+		//
+			
+		
+		
+		
+
+		
+	}
+		return recordListFinal;
+		
+	}
 	public static void Init() {
 
 		List<RelDef> listReldef = DBDef.reldef;
