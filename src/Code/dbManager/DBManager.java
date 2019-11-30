@@ -93,6 +93,9 @@ public class DBManager {
 		case "delete":
 			Delete(str);
 			break;
+		case "fill" :
+			Insertall(str);
+			break;
 		case "createindex" : 
 			createindex(str);
 			break;
@@ -121,9 +124,11 @@ public class DBManager {
 			}
 		}
 		int slotCount = (Constants.pageSize) / recordSize;
+		
+		slotCount-= (slotCount/recordSize);
 		System.out.println("record size  dezqdssssdqsdqsdqsdsqd" + recordSize);
-		System.out.println("slot scount  dezedzdzdez" + (slotCount - 2));
-		RelDef refdef = new RelDef(DBDef.nbRelation, recordSize, slotCount - 2);// j'ai un problème là
+		System.out.println("slot scount  dezedzdzdez" + (slotCount));
+		RelDef refdef = new RelDef(DBDef.nbRelation, recordSize, slotCount);// j'ai un problème là
 
 		refdef.setNomRelation(nomRelation);
 		refdef.setNbColonne(nbColonne);
@@ -165,7 +170,7 @@ public class DBManager {
 		
 		FileManager a  = FileManager.getInstance();
 		
-		System.out.println(a.join(nomR1,nomR2,col1,col2));
+		System.out.println(a.join(nomR1,nomR2,col1,col2).size());
 		
 	}
 	public static void Insert(String str) throws IOException {
@@ -341,29 +346,32 @@ public class DBManager {
 		try {
 			
 			DBManager.ProcessCommand("clean");
-
 			DBManager.ProcessCommand("create R 3 int string3 int");
-			DBManager.ProcessCommand("create R1 3 int string3 int");
-			DBManager.ProcessCommand("insert R 3 agh 4");
-			for(int i = 0; i < 100; i++) {
-				DBManager.ProcessCommand("insert R 2 abc 2");
-			}
+			DBManager.ProcessCommand("insert R 1 aab 2");
+			DBManager.ProcessCommand("insert R 2 abc 2");
+			
+			DBManager.ProcessCommand("create S 2 int int");
+			DBManager.ProcessCommand("insert S 1 2");
+			DBManager.ProcessCommand("join R S 1 1");
+			
+			DBManager.ProcessCommand("join R S 3 2");
+			
+			DBManager.ProcessCommand("clean");
+			DBManager.ProcessCommand("create S 8 string2 int string4 float string5 int int int");
+			DBManager.ProcessCommand("insertall S S1.csv");
+			DBManager.ProcessCommand("create R 3 int string4 int");
+			DBManager.ProcessCommand("insertall R R1.csv");
+			DBManager.ProcessCommand("join R S 1 2");
+			
+			//DBManager.ProcessCommand("join R S 2 3");
+			
+			//DBManager.ProcessCommand("join R S 3 6");
+			 
 			
 			
-			DBManager.ProcessCommand("insert R1 1 agh 1");
-			DBManager.ProcessCommand("insert R1 1 agh 1");
-			DBManager.ProcessCommand("join R R1 2 2");
+			
 			
 
-			/*
-			 * DBManager.
-			 * ProcessCommand("create S 8 string2 int string4 float string5 int int int");
-			 * 
-			 * DBManager.ProcessCommand("insertall S S1.csv");
-			 * 
-			 * DBManager.ProcessCommand("delete S 2 1");
-			 * DBManager.ProcessCommand("selectall S");
-			 */
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

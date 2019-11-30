@@ -16,6 +16,7 @@ public class DiskManager {
 	// permet de sotcker pour chaque fichier, le nombre de page existant
 	private static HashMap<Integer, Integer> nbr_page_fichier = new HashMap<>(); // de 1 à n
 
+	private static int maxPage = (Constants.pageSize / 4) - 1;
 	private DiskManager() {
 
 	}
@@ -49,7 +50,7 @@ public class DiskManager {
 
 		try {
 			int compteur_page = nbr_page_fichier.get(fileIdx);
-			
+			if(compteur_page <= maxPage) {
 			p = new PageId(fileIdx, compteur_page + 1);
 			// on incrémente le nbr de page pour le fichier fileIdx (+1)
 			nbr_page_fichier.put(fileIdx, nbr_page_fichier.get(fileIdx) + 1);
@@ -62,6 +63,9 @@ public class DiskManager {
 			r.seek(Constants.pageSize * (p.getPageIdx()-1));
 			r.write(buffer);
 			r.close();
+			}else {
+				System.out.println("trop de pages ont été créé pour la header page!!");
+			}
 
 		} catch (Exception e) {
 			System.out.println("Un problème est survenu lors de l'ajout de page");

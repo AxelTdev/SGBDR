@@ -10,7 +10,7 @@ public class Type {
 			String temp = str.substring(6);
 			this.size = Integer.parseInt(temp);
 			
-			System.out.println(this.size);
+		
 			this.value = "string";
 
 		}
@@ -31,6 +31,11 @@ public class Type {
 
 	public String getValue() {
 		return value;
+	}
+	
+	@Override
+	public String toString() {
+		return " Type " + this.getValue() + "\n";
 	}
 
 	public enum Typeenum {
