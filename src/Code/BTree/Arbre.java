@@ -54,8 +54,9 @@ public class Arbre {
 		for (int i = 0; i < nd.getListEntreeIndex().size(); i++) {
 			if (nd.getListEntreeIndex().get(i).getClef() == cle) {
 				noeudFils = (Noeud) nd.getListEntreeIndex();
+				break;
 			}
-			break;
+			
 		}
 		return noeudFils;
 	}

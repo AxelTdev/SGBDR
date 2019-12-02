@@ -172,6 +172,7 @@ public class DBManager {
 		
 		System.out.println(a.join(nomR1,nomR2,col1,col2).size());
 		
+		
 	}
 	public static void Insert(String str) throws IOException {
 		FileManager fm = FileManager.getInstance();
@@ -344,29 +345,21 @@ public class DBManager {
 
 	public static void main(String[] args) {
 		try {
-			
-			DBManager.ProcessCommand("clean");
-			DBManager.ProcessCommand("create R 3 int string3 int");
-			DBManager.ProcessCommand("insert R 1 aab 2");
-			DBManager.ProcessCommand("insert R 2 abc 2");
-			
-			DBManager.ProcessCommand("create S 2 int int");
-			DBManager.ProcessCommand("insert S 1 2");
-			DBManager.ProcessCommand("join R S 1 1");
-			
-			DBManager.ProcessCommand("join R S 3 2");
+		
 			
 			DBManager.ProcessCommand("clean");
 			DBManager.ProcessCommand("create S 8 string2 int string4 float string5 int int int");
 			DBManager.ProcessCommand("insertall S S1.csv");
 			DBManager.ProcessCommand("create R 3 int string4 int");
 			DBManager.ProcessCommand("insertall R R1.csv");
-			DBManager.ProcessCommand("join R S 1 2");
+			DBManager.ProcessCommand("selectall R ");
+			
 			
 			//DBManager.ProcessCommand("join R S 2 3");
+			//resultat 378 tuples incorrect 7056 attendu
 			
-			//DBManager.ProcessCommand("join R S 3 6");
-			 
+			DBManager.ProcessCommand("join R S 3 6");
+			//resultat 108 tuples incorrect 320 attendu
 			
 			
 			

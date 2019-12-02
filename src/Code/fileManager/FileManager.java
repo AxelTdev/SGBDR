@@ -88,7 +88,7 @@ public class FileManager {
 		boolean pageFinieR1 = false;
 		boolean pageFinieR2 = false;
 		
-
+		int indique = 0;
 		PageId pgR1 = null;
 		PageId pgR2 = null;
 
@@ -100,27 +100,21 @@ public class FileManager {
 		System.out.println("nb colonne "+col1 + "   "+ col2);
 		for (int i = 2; i < r1.getReldef().getSlotCount(); i++) {// les datasPages sont accessibles a partir de 2
 			pgR1 = new PageId(r1.getReldef().getFileIdx(), i);
+			//charge dataPage de relation 1
 			recordR1 = r1.getRecordsInDataPage(pgR1);
-			System.out.println("rentre r1 " + i);
-			if (recordR1.length == 0) {
-				// plus de records
-				pageFinieR1 = true;
-				break;
-			}
+			
 			for (int y = 2;y <r2.getReldef().getSlotCount(); y++) {
 				pgR2 = new PageId(r2.getReldef().getFileIdx(), y);
+				//charge dataPage de relation 2
 				recordR2 = r2.getRecordsInDataPage(pgR2);
-				System.out.println("rentre r2 " + y);
-				if (recordR2.length == 0) {
-					// plus de records
-					pageFinieR2 = true;
-				}
-				// comparaisons
 				
+				// comparaisons
+				indique++;
 				for (int x = 0; x < recordR1.length; x++) {
 
 					for (int o = 0; o < recordR2.length; o++) {
 						if (recordR1[x].getValues()[col1].equals(recordR2[o].getValues()[col2])) {
+							
 							Record rd = new Record(relation);
 							//construction du nouveau record
 							String []tabValue = new String[recordR1[x].getValues().length+recordR2[o].getValues().length];
@@ -129,7 +123,7 @@ public class FileManager {
 					        System.arraycopy(recordR2[o].getValues(), 0, tabValue, recordR1[x].getValues().length, recordR2[o].getValues().length);
 							rd.setValues(tabValue);
 							recordJoin.add(rd);
-							break;
+							
 						}
 					}
 				}
@@ -137,6 +131,7 @@ public class FileManager {
 				
 			}
 		}
+		System.out.println("ddddddddddddddddddddddd" + indique);
 		return recordJoin;
 
 		
