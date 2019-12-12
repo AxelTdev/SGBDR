@@ -26,18 +26,21 @@ public class Arbre {
 		
 		
 		
-		NoeudInterm ndi = new NoeudInterm(new Noeud(), new Noeud());//noeud racine et noeud supplementaire
-		Feuille f = new Feuille(ndi);
-		
-		EntreeDIndex ei = new EntreeDIndex(1, f);//clef et noeud (ici feuille)
-		
-		this.rajouterEntree(ndi, ei);//rajoute un index entre noeud intermediare et entreedindex
-		EntreeDeDonnees e = new EntreeDeDonnees(1);
-		this.rajouterEntree(f, e);
-		e.getRidList().add(donnee.get(0));
 		
 		for (int i = 0; i < donnee.size(); i++) {
-			           
+
+			NoeudInterm ndi = new NoeudInterm(new Noeud(), new Noeud());//noeud racine et noeud supplementaire
+			Feuille f = new Feuille(ndi);
+			
+			EntreeDIndex ei = new EntreeDIndex(1, f);//clef et noeud (ici feuille)
+			
+			this.rajouterEntree(ndi, ei);//rajoute un index entre noeud intermediare et entreedindex
+			
+			EntreeDeDonnees e = new EntreeDeDonnees(1);
+			
+			this.rajouterEntree(f, e);
+			
+			e.getRidList().add(donnee.get(0));    
 		}
 
 	}
@@ -51,8 +54,9 @@ public class Arbre {
 		for (int i = 0; i < nd.getListEntreeIndex().size(); i++) {
 			if (nd.getListEntreeIndex().get(i).getClef() == cle) {
 				noeudFils = (Noeud) nd.getListEntreeIndex();
+				break;
 			}
-			break;
+			
 		}
 		return noeudFils;
 	}

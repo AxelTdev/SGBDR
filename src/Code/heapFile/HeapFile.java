@@ -60,10 +60,12 @@ public class HeapFile {
 	public PageId getFreeDataPageId() {
 		BufferManager u = BufferManager.getInstance();
 		ByteBuffer bb = ByteBuffer.wrap(u.getPage(new PageId(relDef.getFileIdx(), 0)));
-		for (int i = 4; i <= bb.getInt(0) * 4; i += 4) {
-			if (bb.getInt(i) > 0) {
+		int pageCount = bb.getInt(0);
+		bb.position(4);
+		for (int i = 1; i <= pageCount; i ++) {
+			if (bb.getInt(i*4) > 0) {
 				u.FreePage(new PageId(relDef.getFileIdx(), 0), 0);
-				return new PageId(relDef.getFileIdx(), (i / 4) + 1);
+				return new PageId(relDef.getFileIdx(), (i ) + 1);
 
 			}
 		}
@@ -170,6 +172,7 @@ public class HeapFile {
 
 	public Rid InsertRecord(Record rd) throws IOException {
 		PageId pg = this.getFreeDataPageId();
+		
 		if(pg == null) {//si pas de pages de créé ou pas de pages dispo ajouter une page je sais pas si un bon dajouter ici une page a voir
 			pg = this.addDataPage();
 			System.out.println(pg.getPageIdx() + "ss");
@@ -205,7 +208,7 @@ public class HeapFile {
 
 	public static void main(String[] args) {
 
-		RelDef rd1 = new RelDef(1, 10, 4);
+		RelDef rd1 = new RelDef(1, 10, 20);
 		HeapFile h = new HeapFile(rd1);
 		Record r1 = new Record(rd1);
 		Record r2 = new Record(rd1);
@@ -226,16 +229,12 @@ public class HeapFile {
 		h.createNewOnDisk();
 
 		try {
-			PageId l2 = h.addDataPage();
-			PageId l3 = h.addDataPage();
+			
+		
+			for(int i = 0; i < 49; i++) {
 			h.InsertRecord(r1);
-			h.InsertRecord(r1);
-			h.InsertRecord(r1);
-			h.InsertRecord(r1);
-			h.InsertRecord(r1);
-			h.InsertRecord(r1);
-			h.InsertRecord(r2);
-			h.InsertRecord(r1);
+			}
+		
 			
 		
 

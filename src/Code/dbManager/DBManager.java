@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import Code.BTree.Arbre;
 import Code.BTree.Noeud;
@@ -82,12 +83,18 @@ public class DBManager {
 			SelectAll(str);
 
 			break;
+		case "join":
+			join(str);
+			break;
 		case "select":
 			Select(str);
 			break;
 
 		case "delete":
 			Delete(str);
+			break;
+		case "fill" :
+			Insertall(str);
 			break;
 		case "createindex" : 
 			createindex(str);
@@ -117,9 +124,11 @@ public class DBManager {
 			}
 		}
 		int slotCount = (Constants.pageSize) / recordSize;
+		
+		slotCount-= (slotCount/recordSize);
 		System.out.println("record size  dezqdssssdqsdqsdqsdsqd" + recordSize);
-		System.out.println("slot scount  dezedzdzdez" + (slotCount - 2));
-		RelDef refdef = new RelDef(DBDef.nbRelation, recordSize, slotCount - 2);// j'ai un problème là
+		System.out.println("slot scount  dezedzdzdez" + (slotCount));
+		RelDef refdef = new RelDef(DBDef.nbRelation, recordSize, slotCount);// j'ai un problème là
 
 		refdef.setNomRelation(nomRelation);
 		refdef.setNbColonne(nbColonne);
@@ -148,7 +157,23 @@ public class DBManager {
 		dbd.reset();
 
 	}
-
+	public static void join(String str) {
+		String tab[] = str.split(" ");
+		
+		String nomR1 = tab[1];
+		String nomR2 = tab[2];
+		int col1 = Integer.parseInt(tab[3]);
+		int col2 = Integer.parseInt(tab[4]);
+		
+		col1--;//pour atteindre la bonne colonne
+		col2--;
+		
+		FileManager a  = FileManager.getInstance();
+		
+		System.out.println(a.join(nomR1,nomR2,col1,col2).size());
+		
+		
+	}
 	public static void Insert(String str) throws IOException {
 		FileManager fm = FileManager.getInstance();
 		String[] tab = str.split(" ");
@@ -320,28 +345,26 @@ public class DBManager {
 
 	public static void main(String[] args) {
 		try {
+		
 			
 			DBManager.ProcessCommand("clean");
+			DBManager.ProcessCommand("create S 8 string2 int string4 float string5 int int int");
+			DBManager.ProcessCommand("insertall S S1.csv");
+			DBManager.ProcessCommand("create R 3 int string4 int");
+			DBManager.ProcessCommand("insertall R R1.csv");
+			DBManager.ProcessCommand("selectall R ");
+			
+			
+			//DBManager.ProcessCommand("join R S 2 3");
+			//resultat 378 tuples incorrect 7056 attendu
+			
+			DBManager.ProcessCommand("join R S 3 6");
+			//resultat 108 tuples incorrect 320 attendu
+			
+			
+			
+			
 
-			DBManager.ProcessCommand("create R 3 int string3 int");
-			DBManager.ProcessCommand("insert R 1 aab 2");
-			for(int i = 0; i < 412; i++) {
-				DBManager.ProcessCommand("insert R 2 abc 2");
-			}
-			
-			DBManager.ProcessCommand("insert R 1 agh 1");
-			
-			
-
-			/*
-			 * DBManager.
-			 * ProcessCommand("create S 8 string2 int string4 float string5 int int int");
-			 * 
-			 * DBManager.ProcessCommand("insertall S S1.csv");
-			 * 
-			 * DBManager.ProcessCommand("delete S 2 1");
-			 * DBManager.ProcessCommand("selectall S");
-			 */
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
