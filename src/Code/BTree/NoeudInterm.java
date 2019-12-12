@@ -6,6 +6,7 @@ import java.util.List;
 public class NoeudInterm extends Noeud {
 	private List<EntreeDIndex> entreeIndex;
 	private Noeud pointeurSup;
+	
 	public NoeudInterm(Noeud parent, Noeud pointeurSup){
 		super(parent);
 		this.entreeIndex = new ArrayList<>();
