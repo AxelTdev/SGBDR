@@ -3,6 +3,9 @@ package bplusTree;
 import java.io.*;
 import java.util.*;
 
+import object.PageId;
+import object.Rid;
+
 
 
 class BPlusTree {
@@ -669,22 +672,13 @@ public class BTree {
 
 		System.out.println("Bottom Up:");
 
-		List<Integer> data = new ArrayList<>();
-
-		data.add(7);
-		data.add(5);
-		data.add(2);
-		data.add(19);
-		data.add(19);
-		data.add(14);
-		data.add(16);
-		data.add(19);
-		data.add(15);
-		data.add(15);
-		data.add(1);
-		data.add(19);
+		List<Rid> data = new ArrayList<>();
+		for(int i = 0; i < data.size(); i++) {
+		data.add(new Rid(new PageId(1,i),i));
+		
+		}
 		// sort list
-		Collections.sort((List<Integer>) data);
+		Collections.sort((List<Rid>) data);
 
 		//Tree bup = new BottomUp();
 		

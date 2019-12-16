@@ -1,6 +1,7 @@
 package gestionCouche;
 
 import java.io.BufferedReader;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -10,7 +11,11 @@ import java.util.ArrayList;
 
 import java.util.List;
 
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
 import constantes.Constants;
+import interfacejava.Interface;
 import object.Record;
 import object.RelDef;
 import object.Type;
@@ -18,6 +23,7 @@ import object.Type;
 public class DBManager {
 	
 	private static DBManager instance = null;
+	private static String interfacetxt = "";
 
 	private DBManager() {
 
@@ -44,20 +50,13 @@ public class DBManager {
 	}
 
 	public static void processCommand(String str) throws ClassNotFoundException, IOException {
+	
 		String tab[];
 		tab = str.split(" ");
 		switch (tab[0]) {
 
 		case "create":
-			int typeCount = tab.length - 3;
-			Type[] typeTab = new Type[typeCount];
-			for (int i = 3, y = 0; i < tab.length; i++, y++) {
-				typeTab[y] = new Type(tab[i]);
-			}
-
-			// Conversion du nombre de tab en int
-			int nbCol = Integer.parseInt(tab[2]);
-			createRelation(tab[1], nbCol, typeTab);
+			createRelation(str);
 			break;
 		case "clean":
 			clean();
@@ -86,6 +85,9 @@ public class DBManager {
 		case "fill":
 			insertall(str);
 			break;
+		case "interface":
+			visuel(str);
+			break;
 		case "createindex":
 			// createindex(str);
 			break;
@@ -98,8 +100,22 @@ public class DBManager {
 
 	}
 
-	public static void createRelation(String nomRelation, int nbColonne, Type[] typeColonne)
+	public static void createRelation(String str)
 			throws ClassNotFoundException, IOException {
+		String tab[];
+		tab = str.split(" ");
+		int typeCount = tab.length - 3;
+		Type[] typeTab = new Type[typeCount];
+		for (int i = 3, y = 0; i < tab.length; i++, y++) {
+			typeTab[y] = new Type(tab[i]);
+		}
+
+		// Conversion du nombre de tab en int
+		int nombreColonne = Integer.parseInt(tab[2]);
+		int nbColonne = nombreColonne;
+		String nomRelation = tab[1];
+	
+		Type[] typeColonne = typeTab;
 		int recordSize = 0;
 		for (int i = 0; i < nbColonne; i++) {
 			if (typeColonne[i].getValue() == "int" || typeColonne[i].getValue() == "float") {
@@ -117,15 +133,19 @@ public class DBManager {
 
 		slotCount -= (slotCount / recordSize);
 		
-		RelDef refdef = new RelDef(DBDef.nbRelation, recordSize, slotCount);// j'ai un problème là
+		RelDef refdef = new RelDef(DBDef.nbRelation, recordSize, slotCount);
 
 		refdef.setNomRelation(nomRelation);
 		refdef.setNbColonne(nbColonne);
 		refdef.setTypeColonne(typeColonne);
 		DBDef.AddRelation(refdef);
 		FileManager.CreateRelationFile(refdef);
+		DBManager.interfacetxt = "relation créée";
+		
 	}
-
+	public void setInterfacetxtempty() {
+		DBManager.interfacetxt = "";
+	}
 	public static void clean() throws ClassNotFoundException, IOException {
 		// destruction des fichiers catalog et datasX.rf
 		File repertoire = new File("src" + File.separator + "DB");
@@ -144,6 +164,7 @@ public class DBManager {
 		// vider le tableau de reldef de la classe DBDef
 		DBDef dbd = DBDef.Init();
 		dbd.reset();
+		DBManager.interfacetxt = "commande clean executée";
 
 	}
 
@@ -162,8 +183,12 @@ public class DBManager {
 		List<Record> result =a.join(nomR1, nomR2, col1, col2);
 		for(int i = 0; i < result.size(); i++) {
 			System.out.println(result.get(i));
+			DBManager.interfacetxt += result.get(i);
 		}
 		System.out.println("\n Total records = " + result.size());
+		DBManager.interfacetxt += "\n Total records = " + result.size() + "\n";
+		DBManager.interfacetxt += "commande join executée";
+		
 	}
 
 	public static void insert(String str) throws IOException {
@@ -181,7 +206,7 @@ public class DBManager {
 		rd.setValues(valuesTab);
 
 		fm.InsertRecordInRelation(rd, tab[1]);
-
+		DBManager.interfacetxt = "commande insert executée";
 	}
 
 	public static void insertall(String str) throws FileNotFoundException, IOException {
@@ -221,7 +246,7 @@ public class DBManager {
 
 			}
 		}
-
+		DBManager.interfacetxt = "commande insertall executée";
 	}
 
 	public static List<Record> selectAll(String str) {
@@ -233,10 +258,14 @@ public class DBManager {
 		StringBuilder str1 = new StringBuilder();
 		for (int i = 0; i < listRecord.size(); i++) {
 			str1.append(listRecord.get(i));
+			
 			str1.append("\n");
 		}
 		str1.append("\n Total records = " + listRecord.size());
 		System.out.println(str1);
+		DBManager.interfacetxt +=str1.toString() + "\n";
+		DBManager.interfacetxt = "commande selectAll executée";
+		
 		return listRecord;
 	}
 
@@ -295,9 +324,12 @@ public class DBManager {
 			fm.InsertRecordInRelation(listRecordFinal.get(i), hf.getReldef().getNomRelation());
 		}
 		System.out.println("Total deleted records = " + listRecordAsupprimer.size());
+		DBManager.interfacetxt = "Total deleted records = " + listRecordAsupprimer.size();
 
 	}
-
+public String getInterfacetxt() {
+	return DBManager.interfacetxt;
+}
 	/*
 	 * public static void createindex(String str) {
 	 * 
@@ -330,6 +362,24 @@ public class DBManager {
 		}
 		str1.append("Total records = " + listRecord.size());
 		System.out.println(str1.toString());
+		interfacetxt = str1.toString();
+	}
+	public static void visuel(String str) {
+		
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				// désactive l'utilisation de la police gras
+				UIManager.put("swing.boldMetal", Boolean.FALSE);
+				try {
+					Interface.createAndShowGUI();
+				} catch (IOException e) {
+
+					e.printStackTrace();
+				}
+
+			}
+		});
 	}
 
 	public static void main(String[] args) {
