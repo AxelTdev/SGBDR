@@ -1,18 +1,14 @@
-package Code.fileManager;
+package gestionCouche;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-import Code.Rid.Rid;
-import Code.dbdef.DBDef;
-import Code.heapFile.HeapFile;
-import Code.pages.PageId;
-import Code.record.Record;
-import Code.reldef.RelDef;
-import Code.type.Type;
+import object.PageId;
+import object.Record;
+import object.RelDef;
+import object.Rid;
+import object.Type;
 
 /*
  * 
@@ -85,8 +81,7 @@ public class FileManager {
 
 		// Etape 2 Equi - Jointure
 
-		boolean pageFinieR1 = false;
-		boolean pageFinieR2 = false;
+		
 		
 		int indique = 0;
 		PageId pgR1 = null;
@@ -97,7 +92,7 @@ public class FileManager {
 
 		// resultat list
 		List<Record> recordJoin = new ArrayList<>();
-		System.out.println("nb colonne "+col1 + "   "+ col2);
+		
 		for (int i = 2; i < r1.getReldef().getSlotCount(); i++) {// les datasPages sont accessibles a partir de 2
 			pgR1 = new PageId(r1.getReldef().getFileIdx(), i);
 			//charge dataPage de relation 1
@@ -131,7 +126,7 @@ public class FileManager {
 				
 			}
 		}
-		System.out.println("ddddddddddddddddddddddd" + indique);
+		
 		return recordJoin;
 
 		

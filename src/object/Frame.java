@@ -1,11 +1,10 @@
-package Code.frame;
+package object;
 
-import Code.diskManager.DiskManager;
-import Code.pages.PageId;
-import Code.util.Constants;
+import constantes.Constants;
+import gestionCouche.DiskManager;
 
 public class Frame {
-	static final boolean LOG = true;
+	
 	private byte[] buff;
 	private PageId pg;
 	private int pin_count;

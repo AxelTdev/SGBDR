@@ -1,9 +1,7 @@
-package Code.Rid;
-
-import Code.pages.PageId;
+package object;
 
 public class Rid {
-	static final boolean LOG = true;
+	
 	private PageId pg;
 	private int indice_case;
 

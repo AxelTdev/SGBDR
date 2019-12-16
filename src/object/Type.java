@@ -1,4 +1,4 @@
-package Code.type;
+package object;
 
 public class Type {
 

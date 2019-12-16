@@ -1,4 +1,4 @@
-package Code.record;
+package object;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -6,9 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import Code.reldef.RelDef;
-import Code.type.Type;
-import Code.util.Constants;
+import constantes.Constants;
 
 public class Record {
 
@@ -129,7 +127,7 @@ public class Record {
 
 	@Override
 	public String toString() {
-		String str = "valeurs du record \n";
+		String str = "";
 		for (int i = 0; i < this.getValues().length - 1; i++) {
 			str += this.getValues()[i] + " ; ";
 		}

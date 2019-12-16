@@ -1,39 +1,29 @@
-package Code.dbManager;
+package gestionCouche;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
 
-import Code.BTree.Arbre;
-import Code.BTree.Noeud;
-import Code.BufferManager.BufferManager;
-import Code.dbdef.DBDef;
-import Code.fileManager.FileManager;
-import Code.heapFile.HeapFile;
-import Code.record.Record;
-import Code.reldef.RelDef;
-import Code.type.Type;
-import Code.util.Constants;
+import java.util.ArrayList;
+
+import java.util.List;
+
+import constantes.Constants;
+import object.Record;
+import object.RelDef;
+import object.Type;
 
 public class DBManager {
-	static final boolean LOG = true;
+	
 	private static DBManager instance = null;
 
 	private DBManager() {
 
 	}
 
-	public static DBManager Init() throws ClassNotFoundException, IOException {
+	public static DBManager init() throws ClassNotFoundException, IOException {
 		if (instance == null) {
 			instance = new DBManager();
 		}
@@ -42,7 +32,7 @@ public class DBManager {
 		return instance;
 	}
 
-	public static void Finish() {
+	public static void finish() {
 		try {
 			DBDef.Finish();
 		} catch (IOException e) {
@@ -53,7 +43,7 @@ public class DBManager {
 		u.FlushAll();
 	}
 
-	public static void ProcessCommand(String str) throws ClassNotFoundException, IOException {
+	public static void processCommand(String str) throws ClassNotFoundException, IOException {
 		String tab[];
 		tab = str.split(" ");
 		switch (tab[0]) {
@@ -67,39 +57,39 @@ public class DBManager {
 
 			// Conversion du nombre de tab en int
 			int nbCol = Integer.parseInt(tab[2]);
-			CreateRelation(tab[1], nbCol, typeTab);
+			createRelation(tab[1], nbCol, typeTab);
 			break;
 		case "clean":
-			Clean();
+			clean();
 			break;
 		case "insert":
-			Insert(str);
+			insert(str);
 			break;
 		case "insertall":
-			Insertall(str);
+			insertall(str);
 			break;
 		case "selectall":
 
-			SelectAll(str);
+			selectAll(str);
 
 			break;
 		case "join":
 			join(str);
 			break;
 		case "select":
-			Select(str);
+			select(str);
 			break;
 
 		case "delete":
-			Delete(str);
+			delete(str);
 			break;
-		case "fill" :
-			Insertall(str);
+		case "fill":
+			insertall(str);
 			break;
-		case "createindex" : 
-			createindex(str);
+		case "createindex":
+			// createindex(str);
 			break;
-		case "selectindex" : 
+		case "selectindex":
 			break;
 		default:
 			System.out.println("veuillez réessayer");
@@ -108,7 +98,7 @@ public class DBManager {
 
 	}
 
-	public static void CreateRelation(String nomRelation, int nbColonne, Type[] typeColonne)
+	public static void createRelation(String nomRelation, int nbColonne, Type[] typeColonne)
 			throws ClassNotFoundException, IOException {
 		int recordSize = 0;
 		for (int i = 0; i < nbColonne; i++) {
@@ -124,10 +114,9 @@ public class DBManager {
 			}
 		}
 		int slotCount = (Constants.pageSize) / recordSize;
+
+		slotCount -= (slotCount / recordSize);
 		
-		slotCount-= (slotCount/recordSize);
-		System.out.println("record size  dezqdssssdqsdqsdqsdsqd" + recordSize);
-		System.out.println("slot scount  dezedzdzdez" + (slotCount));
 		RelDef refdef = new RelDef(DBDef.nbRelation, recordSize, slotCount);// j'ai un problème là
 
 		refdef.setNomRelation(nomRelation);
@@ -137,7 +126,7 @@ public class DBManager {
 		FileManager.CreateRelationFile(refdef);
 	}
 
-	public static void Clean() throws ClassNotFoundException, IOException {
+	public static void clean() throws ClassNotFoundException, IOException {
 		// destruction des fichiers catalog et datasX.rf
 		File repertoire = new File("src" + File.separator + "DB");
 		File[] contenu = repertoire.listFiles();
@@ -157,24 +146,27 @@ public class DBManager {
 		dbd.reset();
 
 	}
+
 	public static void join(String str) {
 		String tab[] = str.split(" ");
-		
+
 		String nomR1 = tab[1];
 		String nomR2 = tab[2];
 		int col1 = Integer.parseInt(tab[3]);
 		int col2 = Integer.parseInt(tab[4]);
-		
-		col1--;//pour atteindre la bonne colonne
+
+		col1--;// pour atteindre la bonne colonne
 		col2--;
-		
-		FileManager a  = FileManager.getInstance();
-		
-		System.out.println(a.join(nomR1,nomR2,col1,col2).size());
-		
-		
+
+		FileManager a = FileManager.getInstance();
+		List<Record> result =a.join(nomR1, nomR2, col1, col2);
+		for(int i = 0; i < result.size(); i++) {
+			System.out.println(result.get(i));
+		}
+		System.out.println("\n Total records = " + result.size());
 	}
-	public static void Insert(String str) throws IOException {
+
+	public static void insert(String str) throws IOException {
 		FileManager fm = FileManager.getInstance();
 		String[] tab = str.split(" ");
 		int valuesSlot = tab.length - 2;
@@ -192,7 +184,7 @@ public class DBManager {
 
 	}
 
-	public static void Insertall(String str) throws FileNotFoundException, IOException {
+	public static void insertall(String str) throws FileNotFoundException, IOException {
 		FileManager fm = FileManager.getInstance();
 		String[] tab = str.split(" ");
 		String[] valueMiseEnForme = null;
@@ -202,11 +194,10 @@ public class DBManager {
 		for (int i = 0; i < fm.getHeapFile().size(); i++) {
 			if (fm.getHeapFile().get(i).getReldef().getNomRelation().equals(tab[1])) {
 				nbType = fm.getHeapFile().get(i).getReldef().getNbColonne();
-				System.out.println("ddddddddddddddddddddddddddddddddslot count ee"
-						+ fm.getHeapFile().get(i).getReldef().getSlotCount());
+				
 			}
 		}
-		System.out.println("nb element" + tab.length);
+		
 		String[] valuesTab = new String[nbType];// pas de commande donc -1 et pas -2
 		File filecsv = new File(tab[2]);
 
@@ -233,7 +224,7 @@ public class DBManager {
 
 	}
 
-	public static List<Record> SelectAll(String str) {
+	public static List<Record> selectAll(String str) {
 		String[] tab = str.split(" ");
 
 		List<Record> listRecord = null;
@@ -256,12 +247,11 @@ public class DBManager {
 	 * condition Etape 2 : Je réinitialise la DataPage Etape 3 : je remets les
 	 * Records à la chaine dans le fichier
 	 */
-	public static void Delete(String str) throws IOException {
+	public static void delete(String str) throws IOException {
 		FileManager fm = FileManager.getInstance();
 		String[] tab = str.split(" ");
 		List<Record> listRecordAsupprimer = new ArrayList<>();
 		listRecordAsupprimer = fm.SelectFromRelation(tab[1], Integer.parseInt(tab[2]), tab[3]);
-		int nbSupp = listRecordAsupprimer.size();
 
 		List<Record> listRecordTotal = new ArrayList<>();
 
@@ -308,28 +298,27 @@ public class DBManager {
 
 	}
 
-	public static void createindex(String str) {
-		
-		
-		String[] tab = str.split(" ");
-		// hashMap représentant B+Tree
-		String nomRelation = tab[1];
-		
-		int ordre = Integer.parseInt(tab[3]);
-		
-		//recuperer les Records
-		String commande = "arg1 " + tab[1];
-		
-		List<Record> recordList = SelectAll(commande);
-		
-		Collections.sort(recordList, new Record(null).new triParColonne(Integer.parseInt(tab[2])));
-		
-		System.out.println("order des record  " + recordList);
-		Noeud racine = new Noeud();//noeud racine
-		Arbre Tree = new Arbre(null, ordre);
-	}
+	/*
+	 * public static void createindex(String str) {
+	 * 
+	 * 
+	 * String[] tab = str.split(" "); // hashMap représentant B+Tree String
+	 * nomRelation = tab[1];
+	 * 
+	 * int ordre = Integer.parseInt(tab[3]);
+	 * 
+	 * //recuperer les Records String commande = "arg1 " + tab[1];
+	 * 
+	 * List<Record> recordList = SelectAll(commande);
+	 * 
+	 * Collections.sort(recordList, new Record(null).new
+	 * triParColonne(Integer.parseInt(tab[2])));
+	 * 
+	 * System.out.println("order des record  " + recordList); Noeud racine = new
+	 * Noeud();//noeud racine Arbre Tree = new Arbre(null, ordre); }
+	 */
 
-	public static void Select(String str) {
+	public static void select(String str) {
 		FileManager fm = FileManager.getInstance();
 		String[] tab = str.split(" ");
 		List<Record> listRecord = new ArrayList<>();
@@ -345,25 +334,19 @@ public class DBManager {
 
 	public static void main(String[] args) {
 		try {
-		
-			
-			DBManager.ProcessCommand("clean");
-			DBManager.ProcessCommand("create S 8 string2 int string4 float string5 int int int");
-			DBManager.ProcessCommand("insertall S S1.csv");
-			DBManager.ProcessCommand("create R 3 int string4 int");
-			DBManager.ProcessCommand("insertall R R1.csv");
-			DBManager.ProcessCommand("selectall R ");
-			
-			
-			//DBManager.ProcessCommand("join R S 2 3");
-			//resultat 378 tuples incorrect 7056 attendu
-			
-			DBManager.ProcessCommand("join R S 3 6");
-			//resultat 108 tuples incorrect 320 attendu
-			
-			
-			
-			
+
+			DBManager.processCommand("clean");
+			DBManager.processCommand("create S 8 string2 int string4 float string5 int int int");
+			DBManager.processCommand("insertall S S1.csv");
+			DBManager.processCommand("create R 3 int string4 int");
+			DBManager.processCommand("insertall R R1.csv");
+			DBManager.processCommand("selectall R ");
+
+			// DBManager.ProcessCommand("join R S 2 3");
+			// resultat 378 tuples incorrect 7056 attendu
+
+			DBManager.processCommand("join R S 3 6");
+			// resultat 108 tuples incorrect 320 attendu
 
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block

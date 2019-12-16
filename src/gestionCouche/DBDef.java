@@ -1,4 +1,4 @@
-package Code.dbdef;
+package gestionCouche;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,7 +10,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import Code.reldef.RelDef;
+import object.RelDef;
 
 public class DBDef implements Serializable {
 
@@ -60,42 +60,41 @@ public class DBDef implements Serializable {
 	 */
 
 	public static void serializeDBDef() throws IOException {
-		System.out.println("Debut serialization DBDef");
+		
 		String fileName =  "src" + File.separator + "DB" + File.separator + "Catalog.def";
 		FileOutputStream fileOut = null;
 
 		try {
 			fileOut = new FileOutputStream(fileName);
 		} catch (FileNotFoundException e) {
-			System.out.println("Fichier Introuvable + " + fileName);
+			
 			e.printStackTrace();
 		}
 		ObjectOutputStream out = new ObjectOutputStream(fileOut);
 		out.writeObject(instance);
 		out.close();
 		fileOut.close();
-		System.out.println("Fin serialization DBDef");
+		
 	}
 
 	public static void deserialiserDBDef() throws ClassNotFoundException, IOException {
-		System.out.println("Verifier si Catalog.def existe");
+		
 		String fileName =  "src" + File.separator + "DB" + File.separator + "Catalog.def";
 		File file = new File(fileName);
 
 		FileInputStream fis;
 		if (file.exists()) {
-			System.out.println(" fichier Catalog.def trouve");
-			System.out.println(" debut  deserialiserDBDef du DBDef");
+		
 			fis = new FileInputStream(fileName);
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			instance = (DBDef) ois.readObject();
 			ois.close();
 		} else {
-			System.out.println(" fichier Catalog.def introuvable");
+			
 			return;
 		}
 
-		System.out.println("Fin Deserialiser DBDef");
+		
 
 	}
 

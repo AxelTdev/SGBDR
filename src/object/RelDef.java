@@ -1,9 +1,7 @@
-package Code.reldef;
-
-import Code.type.Type;
+package object;
 
 public class RelDef {
-	static final boolean LOG = true;
+	
 	private String nomRelation;
 
 	private int nbColonne;

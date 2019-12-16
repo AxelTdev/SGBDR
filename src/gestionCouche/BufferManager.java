@@ -1,12 +1,10 @@
-package Code.BufferManager;
+package gestionCouche;
 
 
-import java.io.IOException;
 
-import Code.diskManager.DiskManager;
-import Code.frame.Frame;
-import Code.pages.PageId;
-import Code.util.Constants;
+import constantes.Constants;
+import object.Frame;
+import object.PageId;
 
 public class BufferManager {
 	public static final BufferManager INSTANCE = new BufferManager();
@@ -31,8 +29,7 @@ public class BufferManager {
 		int compt = 0;
 		while (!accesPage) {
 			if (compt > 0) {
-				System.out.println(compt);
-				System.out.println(" ! remplacement clock ! ");
+				
 			}
 			for (i = 0; (i < Constants.frameCount); i++) {
 
@@ -43,43 +40,31 @@ public class BufferManager {
 					buffer_pool[i].setPin_count(1);
 
 					buffer_pool[i].setIdpage(pg);
-					System.out.println("case vide");
+					
 					accesPage = true;
-					System.out.println("etat de frame " + i);
-					System.out.println(buffer_pool[i].getPin_count());
-					System.out.println(buffer_pool[i].getFlag_dirty());
-					System.out.println(buffer_pool[i].getRef_bit());
-					System.out.println("*********");
+				
 					break;
 				}else if ( buffer_pool[i].getIdPage().getPageIdx() == pg.getPageIdx()) {//si la page est deja dans le buffer pool
-					System.out.println(buffer_pool[i].getIdPage().getFileIdx());
+					
 					buffer_pool[i].setPin_count(buffer_pool[i].getPin_count() + 1);
-					System.out.println("case occupée par meme page");
+					
 					DiskManager.ReadPage(pg, temp);
 					buffer_pool[i].setBuff(temp);
 					accesPage = true;
-					System.out.println("etat de frame " + i);
-					System.out.println(buffer_pool[i].getPin_count());
-					System.out.println(buffer_pool[i].getFlag_dirty());
-					System.out.println(buffer_pool[i].getRef_bit());
-					System.out.println("*********");
+				
 					break;
 
 				} else if (buffer_pool[i].getPin_count() == 0) {//remplacement
 					if (buffer_pool[i].getRef_bit() == 0) {
 						// remplacement
-						System.out.println("remplacement");
+						
 						DiskManager.ReadPage(pg, temp);
 						buffer_pool[i].setBuff(temp);
 						buffer_pool[i].setPin_count(1);
 
 						buffer_pool[i].setIdpage(pg);
 						accesPage = true;
-						System.out.println("etat de frame " + i);
-						System.out.println(buffer_pool[i].getPin_count());
-						System.out.println(buffer_pool[i].getFlag_dirty());
-						System.out.println(buffer_pool[i].getRef_bit());
-						System.out.println("*********");
+						
 						break;
 
 					}
@@ -97,9 +82,9 @@ public class BufferManager {
 	}
 
 	public void FreePage(PageId pg, int valdirty) {
-		System.out.println("entrée freepagee");
+	
 		for (int i = 0; i < buffer_pool.length;i++) {
-			System.out.println("boucle freepagee");
+			
 			if(buffer_pool[i].getIdPage() == null) {
 				
 				
@@ -120,11 +105,7 @@ public class BufferManager {
 				buffer_pool[i].setPin_count(buffer_pool[i].getPin_count() - 1);
 				buffer_pool[i].setFlag_dirty(valdirty);
 				
-				System.out.println("etat de frame " + i);
-				System.out.println(buffer_pool[i].getPin_count());
-				System.out.println(buffer_pool[i].getFlag_dirty());
-				System.out.println(buffer_pool[i].getRef_bit());
-				System.out.println("*********");
+			
 				break;
 			}
 
@@ -152,28 +133,6 @@ public class BufferManager {
 		return this.buffer_pool;
 	}
 
-	public static void main(String[] args) throws IOException {
-
-		DiskManager.CreateFile(1);
-		BufferManager u = new BufferManager();
-
-		PageId[] id = new PageId[5];
-		for (int i = 0; i < 5; i++) {
-
-			id[i] = DiskManager.AddPage(i);
-
-		}
-		System.out.println("appel 1");
-		u.getPage(id[0]);
-		
-		System.out.println("appel 2");
-		u.getPage(id[0]);
-		System.out.println("appel 3");
-		u.getPage(id[1]);
-		u.FreePage(id[1], 0);
-		u.FreePage(id[0], 0);
-		u.getPage(id[2]);
-
-	}
+	
 
 }

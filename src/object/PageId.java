@@ -1,4 +1,4 @@
-package Code.pages;
+package object;
 
 public class PageId {
 	

@@ -1,13 +1,12 @@
-package Code.diskManager;
+package gestionCouche;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
 
-import Code.pages.PageId;
-import Code.util.Constants;
+import constantes.Constants;
+import object.PageId;
 
 public class DiskManager {
 	private static DiskManager instance = null;
@@ -84,7 +83,7 @@ public class DiskManager {
 				r.read(buff, 0, Constants.pageSize);
 			} else {
 				
-				System.out.println(Constants.pageSize * (p.getPageIdx()));
+				
 				r.seek(Constants.pageSize * (p.getPageIdx()-1));
 				r.read(buff);
 			}
@@ -110,7 +109,7 @@ public class DiskManager {
 				r.write(buff, 0, Constants.pageSize);
 			} else {
 				
-				System.out.println("eez" + Constants.pageSize * (p.getPageIdx()));
+				
 				r.seek(Constants.pageSize * (p.getPageIdx()-1));
 				r.write(buff);
 			}
@@ -123,35 +122,5 @@ public class DiskManager {
 
 	}
 
-	public static void main(String[] args) throws IOException {
-
-		// test du DiskManager
-		DiskManager.CreateFile(1);
-
-		PageId pageId = DiskManager.AddPage(1);
-		byte[] buff = new byte[Constants.pageSize];
-		String str = "bonjour";
-		DiskManager.WritePage(pageId, str.getBytes());
-
-		/*
-		 * PageId pageId2 = DiskManager.AddPage(1); byte[] buff2 = new
-		 * byte[Constants.pageSize]; String str2 = "llllll";
-		 * DiskManager.WritePage(pageId2, str2.getBytes());
-		 */
-
-		DiskManager.ReadPage(pageId, buff);
-
-		for (int i = 0; i < buff.length; i++) {
-			System.out.println(buff[i]);
-		}
-		System.out.println("****************************************");
-		/*
-		 * DiskManager.ReadPage(pageId2, buff2);
-		 * 
-		 * for (int i = 0; i < buff2.length; i++) { System.out.println(buff2[i]); }
-		 * 
-		 * }
-		 */
-
-	}
+	
 }
