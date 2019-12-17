@@ -28,12 +28,18 @@ public class Interface extends JPanel implements ActionListener {
 	private JTextArea log;
 	private JFileChooser fc;
 	private static int compt = 0;
+	private DBManager db; 
 
 
 	public Interface() {
 
 		super(new BorderLayout());// héritage avec Jpanel
-
+		try {
+			db= DBManager.init();
+		} catch (ClassNotFoundException | IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		// cr�ation de la console et configuration de ces dimensions
 		log = new JTextArea(25, 45);
 		log.setMargin(new Insets(5, 5, 5, 5));
@@ -50,10 +56,11 @@ public class Interface extends JPanel implements ActionListener {
 					compt++;
 					if (compt % 2 == 1) {
 						try {
-							DBManager db = DBManager.init();
-							db.createRelation(log.getText());//je suis obligé de le laisser pour recuperer le texte de bd
+						
+							db.processCommand(log.getText());//je suis obligé de le laisser pour recuperer le texte de bd
 							log.append("\n");
 							log.append(db.getInterfacetxt());
+							System.out.println(log.getText());
 							db.setInterfacetxtempty();
 						} catch (ClassNotFoundException e) {
 							// TODO Auto-generated catch block

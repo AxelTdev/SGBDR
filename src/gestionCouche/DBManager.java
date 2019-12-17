@@ -184,6 +184,8 @@ public class DBManager {
 		for(int i = 0; i < result.size(); i++) {
 			System.out.println(result.get(i));
 			DBManager.interfacetxt += result.get(i);
+			DBManager.interfacetxt += "\n";
+			
 		}
 		System.out.println("\n Total records = " + result.size());
 		DBManager.interfacetxt += "\n Total records = " + result.size() + "\n";
@@ -382,29 +384,5 @@ public String getInterfacetxt() {
 		});
 	}
 
-	public static void main(String[] args) {
-		try {
-
-			DBManager.processCommand("clean");
-			DBManager.processCommand("create S 8 string2 int string4 float string5 int int int");
-			DBManager.processCommand("insertall S S1.csv");
-			DBManager.processCommand("create R 3 int string4 int");
-			DBManager.processCommand("insertall R R1.csv");
-			DBManager.processCommand("selectall R ");
-
-			// DBManager.ProcessCommand("join R S 2 3");
-			// resultat 378 tuples incorrect 7056 attendu
-
-			DBManager.processCommand("join R S 3 6");
-			// resultat 108 tuples incorrect 320 attendu
-
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
+	
 }
